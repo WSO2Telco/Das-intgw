@@ -481,7 +481,7 @@
         <siddhi.version>3.1.2</siddhi.version>
         <net.sf.jasperreports.version>6.3.0</net.sf.jasperreports.version>
         <junit.version>4.10</junit.version>
-        <analytics.ids.version>2.0.0-SNAPSHOT</analytics.ids.version>
+        <analytics.ids.version>2.0.0</analytics.ids.version>
         <org.codehaus.groovy.version>1.7.5</org.codehaus.groovy.version>
         <commons.beanutils.version>1.9.0</commons.beanutils.version>
         <commons.digester.version>2.1</commons.digester.version>
