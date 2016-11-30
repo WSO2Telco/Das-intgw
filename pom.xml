@@ -420,7 +420,7 @@
     </profiles>
 
     <properties>
-        <das.release.version>3.1.1-SNAPSHOT</das.release.version>
+        <das.release.version>3.1.0</das.release.version>
 
         <carbon.kernel.version>4.4.9</carbon.kernel.version>
 
