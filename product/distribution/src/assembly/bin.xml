@@ -1071,7 +1071,7 @@
 
         <file>
             <source>
-                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/carbonapps/org.wso2telco.analytics.hub-1.0.0.car
+                ../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/carbonapps/org.wso2telco.analytics.hub.car
             </source>
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/carbonapps</outputDirectory>
             <!--commented since this tag causes issues in maven assembly plugin when copying zip formats-->
@@ -1082,7 +1082,7 @@
 
         <!--<file>-->
             <!--<source>-->
-                <!--../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/carbonapps/org.wso2telco.analytics.hub_report-alert-generation-1.0.0.car-->
+                <!--../p2-profile-gen/target/wso2carbon-core-${carbon.kernel.version}/repository/deployment/server/carbonapps/org.wso2telco.analytics.hub_report-alert-generation.car-->
             <!--</source>-->
             <!--<outputDirectory>${pom.artifactId}-${pom.version}/repository/deployment/server/carbonapps</outputDirectory>-->
             <!--&lt;!&ndash;commented since this tag causes issues in maven assembly plugin when copying zip formats&ndash;&gt;-->
