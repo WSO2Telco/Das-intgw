@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.wso2telco.analytics</groupId>
     <artifactId>org.wso2telco.analytics.hub</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>${analytics.ids.version}</version>
     <modules>
         <module>components/report-generator-extension</module>
         <module>components/report-engine</module>
@@ -485,6 +485,7 @@
     </profiles>
 
     <properties>
+    <analytics.ids.version>2.0.0-SNAPSHOT</analytics.ids.version>
 	<com.jayway.jsonpath.version>0.9.1</com.jayway.jsonpath.version>     
 	<org.wso2.orbit.com.esotericsoftware.kryo.version>2.24.0.wso2v1</org.wso2.orbit.com.esotericsoftware.kryo.version>
 	<das.release.version>3.1.0</das.release.version>
@@ -549,7 +550,6 @@
         <siddhi.version>3.1.2</siddhi.version>
         <net.sf.jasperreports.version>6.3.0</net.sf.jasperreports.version>
         <junit.version>4.10</junit.version>
-        <analytics.ids.version>2.0.0</analytics.ids.version>
         <org.codehaus.groovy.version>1.7.5</org.codehaus.groovy.version>
         <commons.beanutils.version>1.9.0</commons.beanutils.version>
         <commons.digester.version>2.1</commons.digester.version>
