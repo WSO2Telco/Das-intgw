@@ -123,6 +123,9 @@ var getConfig, validate, isProviderRequired, draw, update;
               });
 
             if (notAvailable) {
+
+                groupRow[arcConfig.x] = 0;
+
                 data.forEach(function(row2) {
                     if (groupRow[arcConfig.color] == row2[arcConfig.color]) {
                          groupRow[arcConfig.x] +=  row2[arcConfig.x];
