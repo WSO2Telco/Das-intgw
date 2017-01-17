@@ -47,7 +47,8 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
 
     var log = new Log();
     var carbon = require('carbon');
-    var configs = require('/configs/designer.json');
+//    var configs = require('/configs/designer.json');
+    var configs = require('/modules/config.js');
     var utils = require('/modules/utils.js');
     var JSUtils = Packages.org.wso2.carbon.analytics.jsservice.Utils;
     var AnalyticsCachedJSServiceConnector = Packages.org.wso2.carbon.analytics.jsservice.AnalyticsCachedJSServiceConnector;

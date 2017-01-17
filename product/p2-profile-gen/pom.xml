@@ -390,7 +390,7 @@
 
                                 <!--Dashboard migration-->
                                 <feaureArtifactDef>
-                                    org.wso2.carbon.dashboards:org.wso2.carbon.dashboards.migration.tool.feature:${carbon.dashboard.version}
+                                    org.wso2.carbon.dashboards:org.wso2.carbon.dashboards.migration.tool.feature:2.0.2
                                 </feaureArtifactDef>
 
                                 <!-- Shared analytics feature -->
@@ -807,7 +807,7 @@
                                 <!--Dashboard migration-->
                                 <feature>
                                     <id>org.wso2.carbon.dashboards.migration.tool.feature.group</id>
-                                    <version>${carbon.dashboard.version}</version>
+                                    <version>2.0.2</version>
                                 </feature>
 
 

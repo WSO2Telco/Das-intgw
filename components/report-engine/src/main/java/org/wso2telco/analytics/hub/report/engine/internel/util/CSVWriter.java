@@ -39,8 +39,8 @@ public class CSVWriter {
 
         StringBuilder sb = new StringBuilder();
         sb.append("API");
-//        sb.append(',');
-//        sb.append("MSISDN");
+//      sb.append(',');
+//      sb.append("MSISDN");
         sb.append(',');
         sb.append("Date Time");
         sb.append(',');
@@ -48,33 +48,39 @@ public class CSVWriter {
         sb.append(',');
         sb.append("Application Name");
         sb.append(',');
-//        sb.append("Operator Id");
-//        sb.append(',');
+//      sb.append("Operator Id");
+//      sb.append(',');
         sb.append("Response Code");
         sb.append(System.getProperty("line.separator"));
         bufferedWriter.write(sb.toString());
 
-        for (Record record: records) {
-            sb = new StringBuilder();
-            sb.append(record.getValues().get("api"));
-            sb.append(',');
-//            sb.append(record.getValues().get("msisdn"));
-//            sb.append(',');
-            Date date = new Date(Long.parseLong(record.getValues().get("responseTime").toString()));
-            Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-            sb.append(format.format(date));
-            sb.append(',');
-            sb.append(record.getValues().get("serviceProvider"));
-            sb.append(',');
-            sb.append(record.getValues().get("applicationName"));
-            sb.append(',');
-//            sb.append(record.getValues().get("operatorId"));
-//            sb.append(',');
-            sb.append(record.getValues().get("responseCode"));
-            sb.append(System.getProperty("line.separator"));
-            bufferedWriter.write(sb.toString());
+        if (records.size() > 0) {
+            for (Record record : records) {
+                sb = new StringBuilder();
+                sb.append(record.getValues().get("api"));
+                sb.append(',');
+//              sb.append(record.getValues().get("msisdn"));
+//              sb.append(',');
+                Date date = new Date(Long.parseLong(record.getValues().get("responseTime").toString()));
+                Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+                sb.append(format.format(date));
+                sb.append(',');
+                sb.append(record.getValues().get("serviceProvider"));
+                sb.append(',');
+                sb.append(record.getValues().get("applicationName"));
+                sb.append(',');
+//              sb.append(record.getValues().get("operatorId"));
+//              sb.append(',');
+                sb.append(record.getValues().get("responseCode"));
+                sb.append(System.getProperty("line.separator"));
+                bufferedWriter.write(sb.toString());
+            }
+        }else{
+            bufferedWriter.write("No data available for this date range");
         }
-        bufferedWriter.flush();
-        bufferedWriter.close();
-    }
+
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        }
+
 }
