@@ -47,9 +47,9 @@
                 var operator = /hub-(.*)-(publisher|viewer)/.exec(user.roles[i]);
                 if (operator != undefined ) {
                     currentOperator = operator[1];
-                } 
+                }
             }
-        
+
         }
 
         if (providerConf[PROVIDER_NAME] == "batch") {
@@ -82,7 +82,7 @@
             print([{"operatorId" : currentOperator}]);
             return;
         }
-
+        log.info("providerConf.query ======> "+providerConf.query);
         print(providerAPI.getData(providerConf));
         return;
     }
