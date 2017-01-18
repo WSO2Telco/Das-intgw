@@ -49,8 +49,7 @@
         log.info( "stringify user:"+ stringify(user));
         //----------------------------------------------------------------------------------------------
         if(filter === 'operators') {
-        var db = new Database("AXIATA_MIFE_DB");
-                var table = "operators";
+                 var db = new Database("AXIATA_MIFE_DB");
                 var resultOperators = [];
 
                 try{
@@ -66,12 +65,14 @@
         //-------------------------------------------------------------------------------------------------
 
         if(filter === 'serviceprovider') {
-                var db = new Database("AXIATA_MIFE_DB");
-                var table = "operators";
+                var db = new Database("WSO2AM_DB");
                 var resultServiceProviders = [];
-
-                try{
-                        resultServiceProviders = db.query("SELECT * FROM operators");
+                              myFunc();
+                try {
+                        resultServiceProviders = db.query("SELECT * FROM AM_SUBSCRIBER");
+                           for (var i =0; i < resultServiceProviders.length; i++) {
+                              log.info( "operators :"+ stringify(resultServiceProviders[i]));
+                              }
                         print(resultServiceProviders);
                         return;
                 }
@@ -83,12 +84,14 @@
         //----------------------------------------------------------------------------------------------------------
 
          if(filter === 'application') {
-                 var db = new Database("AXIATA_MIFE_DB");
-                 var table = "operators";
+                 var db = new Database("WSO2AM_DB");
                  var resultApplications = [];
 
-                 try{
-                         resultApplications = db.query("SELECT * FROM operators");
+                 try {
+                         resultApplications = db.query("SELECT * FROM AM_APPLICATION");
+                         for (var i =0; i < resultApplications.length; i++) {
+                                log.info( "operators :"+ stringify(resultApplications[i]));
+                         }
                          print(resultApplications);
                          return;
                  }
@@ -105,7 +108,7 @@
                  var table = "operators";
                  var resultAPI = [];
 
-                 try{
+                 try {
                           resultAPI = db.query("SELECT * FROM operators");
                                   for (var i =0; i < resultAPI.length; i++) {
                                       log.info( "operators :"+ stringify(resultAPI[i]));
@@ -241,6 +244,10 @@
 
                       
         }
+
+          function myFunc() {
+                 log.info("Required within a function");
+           }
 
 }());
 

@@ -155,7 +155,7 @@ $(function () {
                 var items = "";
 
                 for ( var i =0 ; i < data.length; i++) {
-                    items += '<li><a href="#">' + data[i]["operatorname"] +'</a></li>'
+                    items += '<li><a href="#">' + data[i]["USER_ID"] +'</a></li>'
                 }
                 $("#dropdown-sp").html( $("#dropdown-sp").html() + items);
                 $("#button-sp").val("All");
@@ -172,6 +172,7 @@ $(function () {
 
                     conf.serviceProvider = $("#button-sp").val();
 
+                    // load application drop down
                     $.ajax({
                         url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=application',
                         method: "POST",
@@ -180,13 +181,10 @@ $(function () {
                         async: false,
                         success: function (data) {
                             var appItems = '<li><a href="#">All</a></li>';
-                            var apiItems = '<li><a href="#">All</a></li>';
                             var apps = [];
-                            var apis = [];
 
                             for ( var i =0 ; i < data.length; i++) {
-                                apps.push(data[i]["operatorname"]);
-                                apis.push(data[i]["operatorname"]);
+                                apps.push(data[i]["NAME"]);
                             }
 
                             apps = Array.from(new Set(apps)).sort();
@@ -194,19 +192,35 @@ $(function () {
                                 appItems += '<li><a href="#">' + apps[i] +'</a></li>'
                             }
 
-                            apis = Array.from(new Set(apis)).sort();
-                            for ( var i =0 ; i < apis.length; i++) {
-                                apiItems += '<li><a href="#">' + apis[i] +'</a></li>'
-                            }
-
                             $("#dropdown-app").html(appItems);
-                            $("#button-app").val("All");
 
                             $("#dropdown-app li a").click(function(){
                                 $("#button-app").text($(this).text());
                                 $("#button-app").append('<span class="caret"></span>');
                                 $("#button-app").val($(this).text());
                             });
+                        }
+                    });
+
+                    // load api drop down
+                    $.ajax({
+                        url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=api',
+                        method: "POST",
+                        data: JSON.stringify(conf),
+                        contentType: "application/json",
+                        async: false,
+                        success: function (data) {
+                            var apiItems = '<li><a href="#">All</a></li>';
+                            var apis = [];
+
+                            for ( var i =0 ; i < data.length; i++) {
+                                apis.push(data[i]["operatorname"]);
+                            }
+
+                            apis = Array.from(new Set(apis)).sort();
+                            for ( var i =0 ; i < apis.length; i++) {
+                                apiItems += '<li><a href="#">' + apis[i] +'</a></li>'
+                            }
 
                             $("#dropdown-api").html(apiItems);
                             $("#button-api").val("All");
@@ -220,10 +234,35 @@ $(function () {
                     });
 
 
-
                 });
 
 
+            }
+        });
+
+        // load operator drop down
+        conf["provider-conf"]["provider-name"] = "operator";
+        $.ajax({
+            url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=operators',
+            method: "POST",
+            data: JSON.stringify(conf),
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                var items = "";
+
+                for ( var i =0 ; i < data.length; i++) {
+                    items += '<li><a href="#">' + data[i]["operatorname"] +'</a></li>'
+                }
+                $("#dropdown-operator").html( $("#dropdown-operator").html() + items);
+                $("#button-operator").val("All");
+
+
+                $("#dropdown-operator li a").click(function(){
+                    $("#button-operator").text($(this).text());
+                    $("#button-operator").append('<span class="caret"></span>');
+                    $("#button-operator").val($(this).text());
+                });
             }
         });
 
@@ -239,7 +278,7 @@ $(function () {
                 var apps = [];
 
                 for ( var i =0 ; i < data.length; i++) {
-                    apps.push(data[i]["operatorname"]);
+                    apps.push(data[i]["NAME"]);
                 }
 
                 apps = Array.from(new Set(apps)).sort();
@@ -287,34 +326,6 @@ $(function () {
                 });
             }
         });
-
-
-        // load operator drop down
-        conf["provider-conf"]["provider-name"] = "operator";
-        $.ajax({
-            url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=operators',
-            method: "POST",
-            data: JSON.stringify(conf),
-            contentType: "application/json",
-            async: false,
-            success: function (data) {
-                var items = "";
-
-                for ( var i =0 ; i < data.length; i++) {
-                    items += '<li><a href="#">' + data[i]["operatorname"] +'</a></li>'
-                }
-                $("#dropdown-operator").html( $("#dropdown-operator").html() + items);
-                $("#button-operator").val("All");
-
-
-                $("#dropdown-operator li a").click(function(){
-                    $("#button-operator").text($(this).text());
-                    $("#button-operator").append('<span class="caret"></span>');
-                    $("#button-operator").val($(this).text());
-                });
-            }
-        });
-
 
         $("#button-app").val("All");
         $("#button-api").val("All");
