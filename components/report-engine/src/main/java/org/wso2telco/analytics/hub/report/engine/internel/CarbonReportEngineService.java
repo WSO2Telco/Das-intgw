@@ -95,19 +95,23 @@ class ReportEngineGenerator implements Runnable {
                             int maxLength, int writeBufferLength)
             throws AnalyticsException{
 
-        List<SearchResultEntry> resultEntries = ReportEngineServiceHolder.getAnalyticsDataService()
-                .search(tenantId, tableName, query, start, maxLength);
+        int dataCount = ReportEngineServiceHolder.getAnalyticsDataService()
+                .searchCount(tenantId, tableName, query);
+        List<Record> records = new ArrayList<>();
+        if(dataCount > 0) {
+            List<SearchResultEntry> resultEntries = ReportEngineServiceHolder.getAnalyticsDataService()
+                    .search(tenantId, tableName, query, start, maxLength);
 
-        List<String> ids = new ArrayList<>();
-        for (SearchResultEntry entry : resultEntries) {
-            ids.add(entry.getId());
+            List<String> ids = new ArrayList<>();
+            for (SearchResultEntry entry : resultEntries) {
+                ids.add(entry.getId());
+            }
+            AnalyticsDataResponse resp = ReportEngineServiceHolder.getAnalyticsDataService()
+                    .get(tenantId, tableName, 1, null, ids);
+
+            records = AnalyticsDataServiceUtils
+                    .listRecords(ReportEngineServiceHolder.getAnalyticsDataService(), resp);
         }
-        AnalyticsDataResponse resp = ReportEngineServiceHolder.getAnalyticsDataService()
-                .get(tenantId, tableName, 1, null, ids);
-
-        List<Record> records = AnalyticsDataServiceUtils
-                .listRecords(ReportEngineServiceHolder.getAnalyticsDataService(), resp);
-
         try {
             CSVWriter.write(records, writeBufferLength, filePath);
         } catch (IOException e) {

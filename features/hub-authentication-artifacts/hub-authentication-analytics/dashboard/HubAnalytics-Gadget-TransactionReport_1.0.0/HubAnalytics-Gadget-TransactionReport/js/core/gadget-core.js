@@ -233,38 +233,11 @@ $(function () {
                         }
                     });
 
-
                 });
-
 
             }
         });
 
-        // load operator drop down
-        conf["provider-conf"]["provider-name"] = "operator";
-        $.ajax({
-            url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=operators',
-            method: "POST",
-            data: JSON.stringify(conf),
-            contentType: "application/json",
-            async: false,
-            success: function (data) {
-                var items = "";
-
-                for ( var i =0 ; i < data.length; i++) {
-                    items += '<li><a href="#">' + data[i]["operatorname"] +'</a></li>'
-                }
-                $("#dropdown-operator").html( $("#dropdown-operator").html() + items);
-                $("#button-operator").val("All");
-
-
-                $("#dropdown-operator li a").click(function(){
-                    $("#button-operator").text($(this).text());
-                    $("#button-operator").append('<span class="caret"></span>');
-                    $("#button-operator").val($(this).text());
-                });
-            }
-        });
 
         // load application drop down
         $.ajax({
@@ -278,7 +251,7 @@ $(function () {
                 var apps = [];
 
                 for ( var i =0 ; i < data.length; i++) {
-                    apps.push(data[i]["NAME"]);
+                    apps.push(data[i]["operatorname"]);
                 }
 
                 apps = Array.from(new Set(apps)).sort();
@@ -323,6 +296,33 @@ $(function () {
                     $("#button-api").text($(this).text());
                     $("#button-api").append('<span class="caret"></span>');
                     $("#button-api").val($(this).text());
+                });
+            }
+        });
+
+
+        // load operator drop down
+        conf["provider-conf"]["provider-name"] = "operator";
+        $.ajax({
+            url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=operators',
+            method: "POST",
+            data: JSON.stringify(conf),
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                var items = "";
+
+                for ( var i =0 ; i < data.length; i++) {
+                    items += '<li><a href="#">' + data[i]["operatorname"] +'</a></li>'
+                }
+                $("#dropdown-operator").html( $("#dropdown-operator").html() + items);
+                $("#button-operator").val("All");
+
+
+                $("#dropdown-operator li a").click(function(){
+                    $("#button-operator").text($(this).text());
+                    $("#button-operator").append('<span class="caret"></span>');
+                    $("#button-operator").val($(this).text());
                 });
             }
         });
