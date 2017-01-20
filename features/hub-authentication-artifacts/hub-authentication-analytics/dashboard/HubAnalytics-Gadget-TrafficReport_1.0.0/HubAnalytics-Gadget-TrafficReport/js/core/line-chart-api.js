@@ -84,7 +84,7 @@ var getConfig, validate, isProviderRequired, draw, update;
             chartConfig.color = "errorMessageId";
             chartConfig.count = "totalFailureCount";
         }
-        alert(JSON.stringify(chartConfig));
+
         var view = {
             id: "chart-0",
             schema: schema,
