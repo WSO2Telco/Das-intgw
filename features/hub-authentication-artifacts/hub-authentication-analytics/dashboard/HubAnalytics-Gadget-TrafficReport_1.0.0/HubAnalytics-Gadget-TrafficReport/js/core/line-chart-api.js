@@ -152,7 +152,7 @@ var getConfig, validate, isProviderRequired, draw, update;
                         });
                         result.push(row);
                     });
-                    wso2gadgets.onDataReady(result);
+                    wso2gadgets.onDataReady(result.sort());
                 }
             }
 
