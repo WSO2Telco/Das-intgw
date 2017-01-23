@@ -67,10 +67,6 @@
       "type": "STRING"
     },
     {
-      "name": "applicationId",
-      "type": "STRING"
-    },
-    {
       "name": "requestId",
       "type": "STRING"
     },
@@ -95,7 +91,7 @@
       "type": "STRING"
     },
     {
-      "name": "spOperatorId",
+      "name": "serviceProviderId",
       "type": "STRING"
     },
     {
@@ -104,6 +100,26 @@
     },
     {
       "name": "spConsumerKey",
+      "type": "STRING"
+    },
+    {
+      "name": "operatorName",
+      "type": "STRING"
+    },
+    {
+      "name": "apiPublisherID",
+      "type": "STRING"
+    },
+    {
+      "name": "apiID",
+      "type": "STRING"
+    },
+    {
+      "name": "department",
+      "type": "STRING"
+    },
+    {
+      "name": "applicationId",
       "type": "STRING"
     }
   ]
