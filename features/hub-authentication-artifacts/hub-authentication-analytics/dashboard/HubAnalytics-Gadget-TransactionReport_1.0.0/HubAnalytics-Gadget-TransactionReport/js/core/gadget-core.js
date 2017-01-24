@@ -137,6 +137,35 @@ $(function () {
         });
     });
 
+    $("#button-app").click(function(){
+      conf["provider-conf"]["sp"] = 1;
+      conf["provider-conf"]["api"] = 4;
+      conf["provider-conf"]["operator"] = $("#button-operator").val();
+
+      $.ajax({
+        url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=application',
+        method: "POST",
+        data: JSON.stringify(conf),
+        contentType: "application/json",
+        async: false,
+        success: function (data) {
+          var appItems = '';
+          var apps = [];
+
+          for ( var i =0 ; i < data.length; i++) {
+              apps.push(data[i]["NAME"]+"+"+data[i]["APPLICATION_ID"]);
+          }
+
+          apps = Array.from(new Set(apps)).sort();
+          for ( var i =0 ; i < apps.length; i++) {
+              appItems += '<li><a id='+apps[i].split('+')[1]+' href="#">' + apps[i].split('+')[0]+'</a></li>'
+          }
+
+          $("#dropdown-app").append(appItems);
+        }
+      });
+
+    });
 
 
     getGadgetLocation(function (gadget_Location) {
@@ -171,7 +200,7 @@ $(function () {
                     conf["provider-conf"]["provider-name"] = "app";
 
                     conf.serviceProvider = $("#button-sp").val();
-
+/*
                     // load application drop down
                     $.ajax({
                         url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=application',
@@ -201,7 +230,7 @@ $(function () {
                             });
                         }
                     });
-
+*/
                     // load api drop down
                     $.ajax({
                         url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=api',
@@ -240,7 +269,7 @@ $(function () {
 
 
         // load application drop down
-        $.ajax({
+/*        $.ajax({
             url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=application',
             method: "POST",
             data: JSON.stringify(conf),
@@ -251,7 +280,7 @@ $(function () {
                 var apps = [];
 
                 for ( var i =0 ; i < data.length; i++) {
-                    apps.push(data[i]["operatorname"]);
+                    apps.push(data[i]["NAME"]);
                 }
 
                 apps = Array.from(new Set(apps)).sort();
@@ -268,7 +297,7 @@ $(function () {
                 });
             }
         });
-
+*/
         // load api drop down
         $.ajax({
             url: gadgetLocation + '/gadget-controller.jag?action=getData&filter=api',
@@ -361,6 +390,3 @@ function downloadFile(index) {
 
     });
 }
-
-
-

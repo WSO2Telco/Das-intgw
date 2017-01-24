@@ -26,7 +26,7 @@
     var action = request.getParameter("action");
     var filter = request.getParameter("filter");
     var data = request.getContent();
-  
+
     var user = session.get('user');
 
 
@@ -45,6 +45,8 @@
         var allOperators = false;
         var currentOperator;
         var user = session.get('user');
+        log.info( "application ----------------------------------------- ");
+
 
         log.info( "stringify user:"+ stringify(user));
         //----------------------------------------------------------------------------------------------
@@ -88,12 +90,21 @@
          if(filter === 'application') {
                  var db = new Database("WSO2AM_DB");
                  var resultApplications = [];
+                 var sp = providerConf["sp"];
+                 var api = providerConf["api"];
+                 var operator = providerConf["operator"];
+                 var query = "SELECT * FROM AM_APPLICATION as app";
+
+                 if(api > 0){
+                  query += " INNER JOIN am_subscription as sb ON app.APPLICATION_ID=sb.APPLICATION_ID WHERE API_ID="+api;
+                 }
+                 if(sp > 0){
+                  query += " AND SUBSCRIBER_ID="+sp;
+                 }
 
                  try {
-                         resultApplications = db.query("SELECT * FROM AM_APPLICATION");
-                         for (var i =0; i < resultApplications.length; i++) {
-                                log.info( "operators :"+ stringify(resultApplications[i]));
-                         }
+                          log.info("api ----- => "+ query);
+                         resultApplications = db.query(query);
                          print(resultApplications);
                          return;
                  }
@@ -136,9 +147,9 @@
                 var operator = /hub-(.*)-(publisher|viewer)/.exec(user.roles[i]);
                 if (operator != undefined ) {
                     currentOperator = operator[1];
-                } 
+                }
             }
-        
+
         }
 
         if (providerConf[PROVIDER_NAME] == "batch") {
@@ -173,7 +184,7 @@
         }
         print(providerAPI.getData(providerConf));
         return;
-    } else if (user != null) { 
+    } else if (user != null) {
 
 
 
@@ -192,10 +203,10 @@
                 //var query = "responseCode:201";
                 var reportMaxLength = 10;
 
-                
+
                 var providerConf = data[PROVIDER_CONF];
                 var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
-               
+
 
                 var query = "responseTime:["+data.dateStart+" TO "+data.dateEnd+"]";
 
@@ -234,18 +245,18 @@
 
                         } else if (action == "get" && request.getParameter("index") != null) {
                             var file = new File(userReportDirectory).listFiles()[request.getParameter("index")];
-                            response.contentType = "application/octet-stream";  
-                            response.addHeader("Content-Disposition", "attachment; filename="+ file.getName()); 
+                            response.contentType = "application/octet-stream";
+                            response.addHeader("Content-Disposition", "attachment; filename="+ file.getName());
                              print(file.getStream());
 
-                       } else if (action == "remove" && request.getParameter("index") != null) { 
+                       } else if (action == "remove" && request.getParameter("index") != null) {
                             var file = new File(userReportDirectory);
                             var result = file.listFiles()[request.getParameter("index")].del();
                             print({"fileDeleted":result});
                             return;
                        }
 
-                      
+
         }
 
           function myFunc() {

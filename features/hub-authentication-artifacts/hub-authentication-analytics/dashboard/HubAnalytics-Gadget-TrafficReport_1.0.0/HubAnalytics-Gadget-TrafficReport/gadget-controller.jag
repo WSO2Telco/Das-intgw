@@ -24,13 +24,14 @@
     var PROVIDER_NAME = 'provider-name';
 
     var action = request.getParameter("action");
+    var filter = request.getParameter("filter");
     var data = request.getContent();
     var providerConf = data[PROVIDER_CONF];
 
 
 var log = new Log();
 
-
+    log.info("providerConf[PROVIDER_NAME] => "+providerConf[PROVIDER_NAME]);
 
     var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
 
@@ -51,9 +52,9 @@ var log = new Log();
                 var operator = /hub-(.*)-(publisher|viewer)/.exec(user.roles[i]);
                 if (operator != undefined ) {
                     currentOperator = operator[1];
-                } 
+                }
             }
-        
+
         }
 
         if (providerConf[PROVIDER_NAME] == "batch") {
@@ -86,17 +87,30 @@ var log = new Log();
                     }
 
                     providerConf.tableName = tableName;
+        }else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == false) {
+                    print([{"operatorId" : currentOperator}]);
+        }else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == true) {
+                    if (!data.operator!="undefined" && data.operator) {
+                    providerConf.query +=  "operatorId:"+ data.operator;
+                    }
+                    print(providerAPI.getData(providerConf));
+        } else if(providerConf[PROVIDER_NAME] == "sp") {
 
-        } else if(providerConf[PROVIDER_NAME] == "app") {
-                if (data.serviceProvider.toLowerCase().trim() != "all") {
-                    providerConf.query +=  "serviceProvider:"+ data.serviceProvider;
+                log.info("serviceProvider --------------22222---------------- "+stringify(providerConf));
+                if(!data.serviceProvider!="undefined" && data.serviceProvider != ""){
+                log.info("serviceProvider ---------------####--------------- "+data.serviceProvider);
+                  providerConf.query +=  "serviceProvider:"+ data.serviceProvider;
                 }
-        } else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == false) {
-            print([{"operatorId" : currentOperator}]);
-            return;
+                print(providerAPI.getData(providerConf));
+        }
+        else if(providerConf[PROVIDER_NAME] == "app") {
+            log.info("applicationName -----------------------====> "+data.applicationName);
+            if(!data.applicationName!="undefined" && data.applicationName){
+              providerConf.query +=  "applicationName:"+ data.applicationName;
+            }
+            print(providerAPI.getData(providerConf));
         }
 
-        print(providerAPI.getData(providerConf));
         return;
     }
 
