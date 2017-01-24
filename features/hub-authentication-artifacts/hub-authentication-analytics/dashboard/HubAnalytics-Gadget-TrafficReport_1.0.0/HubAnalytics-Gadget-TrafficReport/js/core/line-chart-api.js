@@ -84,7 +84,7 @@ var getConfig, validate, isProviderRequired, draw, update;
             chartConfig.color = "errorMessageId";
             chartConfig.count = "totalFailureCount";
         }
-        alert(JSON.stringify(chartConfig));
+
         var view = {
             id: "chart-0",
             schema: schema,
@@ -123,6 +123,9 @@ var getConfig, validate, isProviderRequired, draw, update;
               });
 
             if (notAvailable) {
+
+                groupRow[arcConfig.x] = 0;
+
                 data.forEach(function(row2) {
                     if (groupRow[arcConfig.color] == row2[arcConfig.color]) {
                          groupRow[arcConfig.x] +=  row2[arcConfig.x];
@@ -149,7 +152,7 @@ var getConfig, validate, isProviderRequired, draw, update;
                         });
                         result.push(row);
                     });
-                    wso2gadgets.onDataReady(result);
+                    wso2gadgets.onDataReady(result.sort());
                 }
             }
 

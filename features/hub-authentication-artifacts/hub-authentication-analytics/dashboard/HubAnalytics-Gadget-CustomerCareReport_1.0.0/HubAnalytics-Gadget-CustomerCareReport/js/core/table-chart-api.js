@@ -134,6 +134,8 @@ var getConfig, validate, isProviderRequired, draw, update;
                     $('#table').DataTable({
                         "filter": true,
                         "paging":true,
+                        scrollCollapse: true,
+                        scrollY:'50vh',
                         "dom": '<"dataTablesTop"' +
                 'f' +
                 '<"dataTables_toolbar">' +
