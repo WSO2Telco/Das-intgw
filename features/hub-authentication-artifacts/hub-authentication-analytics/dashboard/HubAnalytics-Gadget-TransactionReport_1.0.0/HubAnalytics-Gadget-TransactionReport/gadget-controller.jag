@@ -164,7 +164,7 @@
                     }
 
                     if (data.serviceProvider.toLowerCase().trim() != "all") {
-                        providerConf.query +=  " AND serviceProvider:"+ data.serviceProvider;
+                        providerConf.query +=  " AND serviceProvider:"+ "\""+ data.serviceProvider+ "\"";
                     }
 
                     if (data.msisdn.toLowerCase().trim() != "") {

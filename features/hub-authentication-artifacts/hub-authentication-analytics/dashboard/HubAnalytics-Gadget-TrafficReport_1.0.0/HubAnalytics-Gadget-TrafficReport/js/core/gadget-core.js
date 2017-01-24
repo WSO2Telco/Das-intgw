@@ -126,7 +126,7 @@ $(function () {
                 var operators = [];
                 operators.push("All");
                 for ( var i =0 ; i < data.length; i++) {
-                    operators.push(data[i]["operatorId"]);
+                    operators.push(data[i]["operatorName"]);
                 }
                 operators = jQuery.unique(operators);
                 operators = Array.from(new Set(operators)).sort();

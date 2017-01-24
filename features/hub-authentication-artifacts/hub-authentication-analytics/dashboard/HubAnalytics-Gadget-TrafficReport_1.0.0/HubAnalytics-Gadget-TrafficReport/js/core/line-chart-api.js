@@ -78,13 +78,13 @@ var getConfig, validate, isProviderRequired, draw, update;
             chartConfig.color = "api";
             chartConfig.count = "totalCount";
         } else if(type == "operator traffic") {
-           chartConfig.color = "operatorId";
+           chartConfig.color = "operatorName";
            chartConfig.count = "totalCount";
         } else if(type == "error traffic") {
             chartConfig.color = "errorMessageId";
             chartConfig.count = "totalFailureCount";
         }
-        alert(JSON.stringify(chartConfig));
+
         var view = {
             id: "chart-0",
             schema: schema,
@@ -123,6 +123,9 @@ var getConfig, validate, isProviderRequired, draw, update;
               });
 
             if (notAvailable) {
+
+                groupRow[arcConfig.x] = 0;
+
                 data.forEach(function(row2) {
                     if (groupRow[arcConfig.color] == row2[arcConfig.color]) {
                          groupRow[arcConfig.x] +=  row2[arcConfig.x];
@@ -130,7 +133,7 @@ var getConfig, validate, isProviderRequired, draw, update;
                 });
 
                 groupData.push(groupRow);
-            }  
+            }
 
 
         });
@@ -149,7 +152,7 @@ var getConfig, validate, isProviderRequired, draw, update;
                         });
                         result.push(row);
                     });
-                    wso2gadgets.onDataReady(result);
+                    wso2gadgets.onDataReady(result.sort());
                 }
             }
 
@@ -159,7 +162,7 @@ var getConfig, validate, isProviderRequired, draw, update;
             wso2gadgets.init(placeholder, view);
             var view = wso2gadgets.load("chart-0");
 
-      
+
             wso2gadgets.init("#canvas2", view2);
             var view2 = wso2gadgets.load("chart-1");
 

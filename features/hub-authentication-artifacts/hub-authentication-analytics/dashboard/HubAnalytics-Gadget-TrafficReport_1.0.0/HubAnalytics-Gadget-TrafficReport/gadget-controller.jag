@@ -68,14 +68,14 @@ var log = new Log();
 
                     if (allOperators) {
                         if (data.operator.toLowerCase().trim() != "all") {
-                            providerConf.query +=  " AND operatorId:"+ data.operator;
+                            providerConf.query +=  " AND operatorName:"+ data.operator;
                         }
                     } else {
-                        providerConf.query +=  " AND operatorId:"+ currentOperator;
+                        providerConf.query +=  " AND operatorName:"+ currentOperator;
                     }
 
                     if (data.serviceProvider.toLowerCase().trim() != "all") {
-                        providerConf.query +=  " AND serviceProvider:"+ data.serviceProvider;
+                        providerConf.query +=  " AND serviceProvider:"+ "\""+ data.serviceProvider+ "\"";
                     }
 
                     if (data.applicationName.toLowerCase().trim() != "all") {
@@ -88,10 +88,10 @@ var log = new Log();
 
                     providerConf.tableName = tableName;
         }else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == false) {
-                    print([{"operatorId" : currentOperator}]);
+                    print([{"operatorName" : currentOperator}]);
         }else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == true) {
                     if (!data.operator!="undefined" && data.operator) {
-                    providerConf.query +=  "operatorId:"+ data.operator;
+                    providerConf.query +=  "operatorName:"+ data.operator;
                     }
                     print(providerAPI.getData(providerConf));
         } else if(providerConf[PROVIDER_NAME] == "sp") {
