@@ -78,7 +78,7 @@ var getConfig, validate, isProviderRequired, draw, update;
             chartConfig.color = "api";
             chartConfig.count = "totalCount";
         } else if(type == "operator traffic") {
-           chartConfig.color = "operatorId";
+           chartConfig.color = "operatorName";
            chartConfig.count = "totalCount";
         } else if(type == "error traffic") {
             chartConfig.color = "errorMessageId";
@@ -133,7 +133,7 @@ var getConfig, validate, isProviderRequired, draw, update;
                 });
 
                 groupData.push(groupRow);
-            }  
+            }
 
 
         });
@@ -162,7 +162,7 @@ var getConfig, validate, isProviderRequired, draw, update;
             wso2gadgets.init(placeholder, view);
             var view = wso2gadgets.load("chart-0");
 
-      
+
             wso2gadgets.init("#canvas2", view2);
             var view2 = wso2gadgets.load("chart-1");
 
