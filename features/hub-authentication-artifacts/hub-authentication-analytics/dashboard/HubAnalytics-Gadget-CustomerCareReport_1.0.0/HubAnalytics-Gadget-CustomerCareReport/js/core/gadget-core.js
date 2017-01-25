@@ -24,8 +24,8 @@ $(function () {
 
     var CHART_CONF = 'chart-conf';
     var PROVIDER_CONF = 'provider-conf';
-
     var REFRESH_INTERVAL = 'refreshInterval';
+    var operatorId = -1, serviceProviderId = -1, applicationId = -1;
 
     var init = function () {
         $.ajax({
@@ -35,10 +35,10 @@ $(function () {
             async: false,
             success: function (data) {
                 conf = JSON.parse(data);
-                conf.operator =  $("#button-operator").val();
-                conf.serviceProvider = $("#button-sp").val();
+                conf.operator =  operatorId;
+                conf.serviceProvider = serviceProviderId;
                 conf.msisdn = $("#txt-msisdn").val();
-                conf.applicationName = $("#button-app").val();
+                conf.applicationName = applicationId;
                 conf.dateStart = moment(moment($("#reportrange").text().split("-")[0]).format("MMMM D, YYYY hh:mm A")).valueOf();
                 conf.dateEnd = moment(moment($("#reportrange").text().split("-")[1]).format("MMMM D, YYYY hh:mm A")).valueOf();
 
@@ -97,101 +97,141 @@ $(function () {
     getGadgetLocation(function (gadget_Location) {
         gadgetLocation = gadget_Location;
         init();
+        loadOperator();
 
-        conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_SERVICE_PROVIDER_SUMMARY";
-        conf["provider-conf"]["provider-name"] = "sp";
-        $.ajax({
-            url: gadgetLocation + '/gadget-controller.jag?action=getData',
-            method: "POST",
-            data: JSON.stringify(conf),
-            contentType: "application/json",
-            async: false,
-            success: function (data) {
-                var items = "";
 
-                for ( var i =0 ; i < data.length; i++) {
-                    items += '<li><a href="#">' + data[i]["serviceProvider"] +'</a></li>'
+        function loadOperator (){
+            conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_OPERATOR_SUMMARY";
+            conf["provider-conf"]["provider-name"] = "operator";
+            $.ajax({
+                url: gadgetLocation + '/gadget-controller.jag?action=getData',
+                method: "POST",
+                data: JSON.stringify(conf),
+                contentType: "application/json",
+                async: false,
+                success: function (data) {
+                    $("#dropdown-operator").empty();
+                    var operatorsItems = "";
+                    var operatorIds = [];
+                    operatorsItems += '<li><a data-val="-1" href="#">All</a></li>';
+                    for (var i =0 ; i < data.length; i++) {
+                        var operator = data[i];
+                        operatorsItems += '<li><a data-val='+ operator.operatorId +' href="#">' + operator.operatorName +'</a></li>';
+                        operatorIds.push(" "+operator.operatorId);
+                    }
+
+                    $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
+                    $("#button-operator").val('<li><a data-val="-1" href="#">All</a></li>');
+                    loadSP(operatorIds);
+
+                    $("#dropdown-operator li a").click(function(){
+                        $("#button-operator").text($(this).text());
+                        $("#button-operator").append('<span class="caret"></span>');
+                        $("#button-operator").val($(this).text());
+                        operatorIds = $(this).data('val');
+                        operatorId = operatorIds;
+                        loadSP(operatorIds);
+                    });
                 }
-                $("#dropdown-sp").html( $("#dropdown-sp").html() + items);
-                $("#button-sp").val("All");
+            });
+        }
 
+        function loadSP (clickedOperator){
 
-                $("#dropdown-sp li a").click(function(){
-                    $("#button-sp").text($(this).text());
-                    $("#button-sp").append('<span class="caret"></span>');
-                    $("#button-sp").val($(this).text());
+            conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+            conf["provider-conf"]["provider-name"] = "operator";
+            conf.operator =  "("+clickedOperator+")";
 
+            $.ajax({
+                url: gadgetLocation + '/gadget-controller.jag?action=getData',
+                method: "POST",
+                data: JSON.stringify(conf),
+                contentType: "application/json",
+                async: false,
+                success: function (data) {
+                    $("#dropdown-sp").empty();
+                    var spItems = '';
+                    var spIds = [];
+                    spItems += '<li><a data-val="-1" href="#">All</a></li>';
+                    for ( var i =0 ; i < data.length; i++) {
+                        var sp = data[i];
+                        spItems += '<li><a data-val='+ sp.serviceProviderId +' href="#">' + sp.serviceProvider +'</a></li>'
+                        spIds.push(" "+sp.serviceProviderId);
+                    }
 
-                    conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
-                    conf["provider-conf"]["provider-name"] = "app";
+                    $("#dropdown-sp").html(spItems);
 
-                    conf.serviceProvider = $("#button-sp").val();
+                    $("#button-sp").text('All');
+                    $("#button-sp").val('<li><a data-val="-1" href="#">All</a></li>');
+                    loadApp(spIds);
+                    $("#dropdown-sp li a").click(function(){
 
-                    $.ajax({
-                        url: gadgetLocation + '/gadget-controller.jag?action=getData',
-                        method: "POST",
-                        data: JSON.stringify(conf),
-                        contentType: "application/json",
-                        async: false,
-                        success: function (data) {
-                            var appItems = '<li><a href="#">All</a></li>';
-                            var apps = [];
-
-                            for ( var i =0 ; i < data.length; i++) {
-                                apps.push(data[i]["applicationName"]);
-                            }
-
-                            apps = Array.from(new Set(apps)).sort();
-
-                            for ( var i =0 ; i < apps.length; i++) {
-                                appItems += '<li><a href="#">' + apps[i] +'</a></li>'
-                            }
-                            $("#dropdown-app").html(appItems);
-                            $("#button-app").val("All");
-
-                            $("#dropdown-app li a").click(function(){
-                                $("#button-app").text($(this).text());
-                                $("#button-app").append('<span class="caret"></span>');
-                                $("#button-app").val($(this).text());
-                            });
-                        }
+                        $("#button-sp").text($(this).text());
+                        $("#button-sp").append('<span class="caret"></span>');
+                        $("#button-sp").val($(this).text());
+                        // var clickedSP = [];
+                        // clickedSP.push($(this).data('val'));
+                        spIds = $(this).data('val');
+                        serviceProviderId = spIds;
+                        loadApp(spIds);
                     });
 
 
-                });
-
-
-            }
-        });
-
-        conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_OPERATOR_SUMMARY";
-        conf["provider-conf"]["provider-name"] = "operator";
-        $.ajax({
-            url: gadgetLocation + '/gadget-controller.jag?action=getData',
-            method: "POST",
-            data: JSON.stringify(conf),
-            contentType: "application/json",
-            async: false,
-            success: function (data) {
-                var items = "";
-
-                for ( var i =0 ; i < data.length; i++) {
-                    items += '<li><a href="#">' + data[i]["operatorId"] +'</a></li>'
                 }
-                $("#dropdown-operator").html( $("#dropdown-operator").html() + items);
-                $("#button-operator").val("All");
+            });
+        }
+
+        function loadApp (sps){
+            // alert(sps);
+            // if(sps)
+            conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+            conf["provider-conf"]["provider-name"] = "sp";
+
+            conf.serviceProvider = "("+sps+")";
+            $.ajax({
+                url: gadgetLocation + '/gadget-controller.jag?action=getData',
+                method: "POST",
+                data: JSON.stringify(conf),
+                contentType: "application/json",
+                async: false,
+                success: function (data) {
 
 
-                $("#dropdown-operator li a").click(function(){
-                    $("#button-operator").text($(this).text());
-                    $("#button-operator").append('<span class="caret"></span>');
-                    $("#button-operator").val($(this).text());
-                });
-            }
-        });
+                    $("#dropdown-app").empty();
+                    var apps = [];
+                    var appItems = '<li><a data-val="-1" href="#">All</a></li>';
+                    for ( var i =0 ; i < data.length; i++) {
+                        var app = data[i];
+                        appItems += '<li><a data-val='+ app.applicationId +' href="#">' + app.applicationName +'</a></li>'
+                        apps.push(" "+app.applicationId);
+                    }
+
+                    $("#dropdown-app").html( $("#dropdown-app").html() + appItems);
+                    $("#button-app").val('<li><a data-val="-1" href="#">All</a></li>');
+                    $("#button-app").text('All');
+                    // loadApp(sps[i]);
+
+
+                    $("#dropdown-app li a").click(function(){
+
+                        $("#button-app").text($(this).text());
+                        $("#button-app").append('<span class="caret"></span>');
+                        $("#button-app").val($(this).text());
+                        // var clickedSP = [];
+                        // clickedSP.push($(this).data('val'));
+                        apps = $(this).data('val');
+                        applicationId = apps;
+                        });
+
+                }
+            });
+        }
+
+
 
 
         $("#button-app").val("All");
+        $("#button-type").val("Customer Care");
 
         $('input[name="daterange"]').daterangepicker({
             timePicker: true,
