@@ -158,10 +158,7 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
      * @param limit
      */
     getData = function(providerConfig, limit) {
-
-
         var tableName = providerConfig.tableName;
-        
         var query = providerConfig.query;
         var limit = 100;
         if (providerConfig.limit) {
