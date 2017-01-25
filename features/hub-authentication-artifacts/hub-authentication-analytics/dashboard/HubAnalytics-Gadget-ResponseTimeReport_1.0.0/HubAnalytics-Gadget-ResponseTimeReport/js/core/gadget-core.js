@@ -278,7 +278,7 @@ $(function () {
 
         $("#button-app").val("All");
         $("#button-api").val("All");
-        $("#button-type").val("Api Traffic");
+        $("#button-type").val("Response Time");
 
         $('input[name="daterange"]').daterangepicker({
             timePicker: true,
