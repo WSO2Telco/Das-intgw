@@ -44,21 +44,27 @@
         var currentOperator;
         var user = session.get('user');
 
+        log.info("user"+ stringify(user));
+
+        var carbon = require('carbon');
+        var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
+        var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
+        var userRealm = userRealmService.getTenantUserRealm(tenantId);
+        var userStore = userRealm.getUserStoreManager();
+        var claim = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/identity/department', null);
+
+
         for (var i =0; i < user.roles.length; i++) {
             if (user.roles[i] == "admin" || user.roles[i] == "internal-gateway-admin") {
                 role = "admin";
                 break;
             } else if(user.roles[i] == "business-unit-viewer"){
-                department = "my10";
+                department = claim;
                 role = "viewer";
                 break;
-            }else if(user.roles[i] == "business-unit-viewer"){
-                department = "my10";
-                role = "viewer";
-                break;
-            }else if(user.roles[i] == "business-unit-publisher"){
+            } else if(user.roles[i] == "business-unit-publisher"){
                 role = "publisher";
-            }else if(user.roles[i] == "Internal/subscriber"){
+            } else if(user.roles[i] == "Internal/subscriber"){
                 role = "serviceProvider";
                 serviceProvider = user.username+"@"+user.domain;
             }
