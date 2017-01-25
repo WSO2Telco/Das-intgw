@@ -26,7 +26,7 @@
     var action = request.getParameter("action");
     var filter = request.getParameter("filter");
     var data = request.getContent();
-  
+
     var user = session.get('user');
 
 
@@ -34,11 +34,11 @@
 
 
     if (action === 'getSchema') {
-      var providerConf = data[PROVIDER_CONF];
-    var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
+        var providerConf = data[PROVIDER_CONF];
+        var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
         print(providerAPI.getSchema(providerConf));
         return;
-    } else if(action === 'getData'){
+    } else if (action === 'getData') {
         var providerConf = data[PROVIDER_CONF];
         var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
         //Check logged in user role and decide which operators to load
@@ -46,211 +46,212 @@
         var currentOperator;
         var user = session.get('user');
 
-        log.info( "stringify user:"+ stringify(user));
+        log.info("stringify user:" + stringify(user));
         //----------------------------------------------------------------------------------------------
-        if(filter === 'operators') {
+        if (filter === 'operators') {
 
-                var db = new Database("AXIATA_MIFE_DB");
-                var resultOperators = [];
+            var db = new Database("AXIATA_MIFE_DB");
+            var resultOperators = [];
 
-                try{
-                        resultOperators = db.query("SELECT * FROM operators");
-                        print(resultOperators);
-                        return;
-                }
-                catch(e){ }
-                finally{
-                        db.close();
-                }
+            try {
+                resultOperators = db.query("SELECT * FROM operators");
+                print(resultOperators);
+                return;
+            }
+            catch (e) {
+            }
+            finally {
+                db.close();
+            }
         }
         //-------------------------------------------------------------------------------------------------
 
-        if(filter === 'serviceprovider') {
+        if (filter === 'serviceprovider') {
 
-                var db = new Database("WSO2AM_DB");
-                var resultServiceProviders = [];
-                              myFunc();
-                try {
-                        resultServiceProviders = db.query("SELECT * FROM AM_SUBSCRIBER");
-                           for (var i =0; i < resultServiceProviders.length; i++) {
-                              log.info( "operators :"+ stringify(resultServiceProviders[i]));
-                              }
-                        print(resultServiceProviders);
-                        return;
+            var db = new Database("WSO2AM_DB");
+            var resultServiceProviders = [];
+            myFunc();
+            try {
+                resultServiceProviders = db.query("SELECT * FROM AM_SUBSCRIBER");
+                for (var i = 0; i < resultServiceProviders.length; i++) {
+                    log.info("operators :" + stringify(resultServiceProviders[i]));
                 }
-                catch(e){ }
-                finally{
-                        db.close();
-                }
+                print(resultServiceProviders);
+                return;
+            }
+            catch (e) {
+            }
+            finally {
+                db.close();
+            }
         }
         //----------------------------------------------------------------------------------------------------------
 
-         if(filter === 'application') {
-                 var db = new Database("WSO2AM_DB");
-                 var resultApplications = [];
+        if (filter === 'application') {
+            var db = new Database("WSO2AM_DB");
+            var resultApplications = [];
 
-                 try {
-                         resultApplications = db.query("SELECT * FROM AM_APPLICATION");
-                         for (var i =0; i < resultApplications.length; i++) {
-                                log.info( "operators :"+ stringify(resultApplications[i]));
-                         }
-                         print(resultApplications);
-                         return;
-                 }
-                 catch(e){ }
-                 finally{
-                         db.close();
-                 }
-         }
-         //------------------------------------------------------------------------------------------------------------
-
-
-          if(filter === 'api') {
-                 var db = new Database("AXIATA_MIFE_DB");
-                 var table = "operators";
-                 var resultAPI = [];
+            try {
+                resultApplications = db.query("SELECT * FROM AM_APPLICATION");
+                for (var i = 0; i < resultApplications.length; i++) {
+                    log.info("operators :" + stringify(resultApplications[i]));
+                }
+                print(resultApplications);
+                return;
+            }
+            catch (e) {
+            }
+            finally {
+                db.close();
+            }
+        }
+        //------------------------------------------------------------------------------------------------------------
 
 
-                 try {
-                          resultAPI = db.query("SELECT * FROM operators");
-                                  for (var i =0; i < resultAPI.length; i++) {
-                                      log.info( "operators :"+ stringify(resultAPI[i]));
-
-                                  }
-                                  print(resultAPI);
-                                  return;
-                 }
-                 catch(e){ }
-                 finally{
-                       db.close();
-                 }
-          }
-          //------------------------------------------------------------------------------------------------------------
+        if (filter === 'api') {
+            var db = new Database("AXIATA_MIFE_DB");
+            var table = "operators";
+            var resultAPI = [];
 
 
-        for (var i =0; i < user.roles.length; i++) {
+            try {
+                resultAPI = db.query("SELECT * FROM operators");
+                for (var i = 0; i < resultAPI.length; i++) {
+                    log.info("operators :" + stringify(resultAPI[i]));
+
+                }
+                print(resultAPI);
+                return;
+            }
+            catch (e) {
+            }
+            finally {
+                db.close();
+            }
+        }
+        //------------------------------------------------------------------------------------------------------------
+
+
+        for (var i = 0; i < user.roles.length; i++) {
             if (user.roles[i] == "admin") {
                 allOperators = true;
                 break;
             } else {
                 var operator = /hub-(.*)-(publisher|viewer)/.exec(user.roles[i]);
-                if (operator != undefined ) {
+                if (operator != undefined) {
                     currentOperator = operator[1];
-                } 
+                }
             }
-        
+
         }
 
         if (providerConf[PROVIDER_NAME] == "batch") {
-                    providerConf.query = "responseTime:["+data.dateStart+" TO "+data.dateEnd+"]";
+            providerConf.query = "responseTime:[" + data.dateStart + " TO " + data.dateEnd + "]";
 
-                    if (allOperators) {
-                        if (data.operator.toLowerCase().trim() != "all") {
-                            providerConf.query +=  " AND operatorId:"+ data.operator;
-                        }
-                    } else {
-                        providerConf.query +=  " AND operatorId:"+ currentOperator;
-                    }
-
-                    if (data.serviceProvider.toLowerCase().trim() != "all") {
-                        providerConf.query +=  " AND serviceProvider:"+ "\""+ data.serviceProvider+ "\"";
-                    }
-
-                    if (data.msisdn.toLowerCase().trim() != "") {
-                        providerConf.query +=  " AND msisdn:"+ data.msisdn;
-                    }
-
-                    if (data.applicationName.toLowerCase().trim() != "all") {
-                        providerConf.query +=  " AND applicationName:"+ data.applicationName;
-                    }
-        } else if(providerConf[PROVIDER_NAME] == "app") {
-                if (data.serviceProvider.toLowerCase().trim() != "all") {
-                    providerConf.query +=  "serviceProvider:"+ data.serviceProvider;
+            if (allOperators) {
+                if (data.operator.toLowerCase().trim() != "all") {
+                    providerConf.query += " AND operatorId:" + data.operator;
                 }
-        }  else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == false) {
-            print([{"operatorId" : currentOperator}]);
+            } else {
+                providerConf.query += " AND operatorId:" + currentOperator;
+            }
+
+            if (data.serviceProvider.toLowerCase().trim() != "all") {
+                providerConf.query += " AND serviceProvider:" + "\"" + data.serviceProvider + "\"";
+            }
+
+            if (data.msisdn.toLowerCase().trim() != "") {
+                providerConf.query += " AND msisdn:" + data.msisdn;
+            }
+
+            if (data.applicationName.toLowerCase().trim() != "all") {
+                providerConf.query += " AND applicationName:" + data.applicationName;
+            }
+        } else if (providerConf[PROVIDER_NAME] == "app") {
+            if (data.serviceProvider.toLowerCase().trim() != "all") {
+                providerConf.query += "serviceProvider:" + data.serviceProvider;
+            }
+        } else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == false) {
+            print([{"operatorId": currentOperator}]);
             return;
         }
         print(providerAPI.getData(providerConf));
         return;
-    } else if (user != null) { 
+    } else if (user != null) {
 
 
+        var userReportDirectory = "/reports/transactions/" + user.username + "/";
+        var directory = "repository/deployment/server/jaggeryapps/portal/" + userReportDirectory;
 
-                    var userReportDirectory = "/reports/transactions/"  + user.username+ "/";
-                    var directory = "repository/deployment/server/jaggeryapps/portal/" + userReportDirectory;
+        if (action == "generate") {
 
-                        if(action == "generate") {
-
-                                        var carbon = require('carbon');
-                var service = service = carbon.server.osgiService('org.wso2telco.analytics.hub.report.engine.ReportEngineService');
-
+            var carbon = require('carbon');
+            var service = service = carbon.server.osgiService('org.wso2telco.analytics.hub.report.engine.ReportEngineService');
 
 
-
-                var tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS";
-                //var query = "responseCode:201";
-                var reportMaxLength = 10;
-
-                
-                var providerConf = data[PROVIDER_CONF];
-                var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
-               
-
-                var query = "responseTime:["+data.dateStart+" TO "+data.dateEnd+"]";
-
-                if (data.operator.toLowerCase().trim() != "all") {
-                   query +=  " AND operatorId:"+ data.operator;
-                }
-
-                if (data.serviceProvider.toLowerCase().trim() != "all") {
-                    query +=  " AND serviceProvider:"+ data.serviceProvider;
-                }
-
-                if (data.api.toLowerCase().trim() != "all") {
-                 log.info(data.api);
-                    query +=  " AND api:" + data.api;
-                }
-
-                if (data.applicationName.toLowerCase().trim() != "all") {
-                    query +=  " AND applicationName:"+ data.applicationName;
-                }
+            var tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS";
+            //var query = "responseCode:201";
+            var reportMaxLength = 10;
 
 
-                            var reportName =  directory + "transaction-report-" + new Date().getTime() ;
-                            service.generateCSVReport(tableName, query, reportName, reportMaxLength);
-                            print({'message':'Report is generating'});
-                            return;
+            var providerConf = data[PROVIDER_CONF];
+            var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
 
-                        } else if (action == "available") {
-                            var file = new File(userReportDirectory);
-                            var files = [];
-                            for(var i = 0; i < file.listFiles().length; i++) {
-                                files[i] = {"name" : file.listFiles()[i].getName(), "index" : i };
-                            }
 
-                            print(files);
-                            return;
+            var query = "responseTime:[" + data.dateStart + " TO " + data.dateEnd + "]";
 
-                        } else if (action == "get" && request.getParameter("index") != null) {
-                            var file = new File(userReportDirectory).listFiles()[request.getParameter("index")];
-                            response.contentType = "application/octet-stream";  
-                            response.addHeader("Content-Disposition", "attachment; filename="+ file.getName()); 
-                             print(file.getStream());
+            if (data.operator.toLowerCase().trim() != "all") {
+                query += " AND operatorId:'" + data.operator+"'";
+            }
 
-                       } else if (action == "remove" && request.getParameter("index") != null) { 
-                            var file = new File(userReportDirectory);
-                            var result = file.listFiles()[request.getParameter("index")].del();
-                            print({"fileDeleted":result});
-                            return;
-                       }
+            if (data.serviceProvider.toLowerCase().trim() != "all") {
+                query += " AND serviceProvider:'" + data.serviceProvider+"'";
+            }
 
-                      
+            if (data.api.toLowerCase().trim() != "all") {
+                log.info(data.api);
+                query += " AND api:" + data.api;
+            }
+
+            if (data.applicationName.toLowerCase().trim() != "all") {
+                query += " AND applicationName:" + data.applicationName;
+            }
+
+
+            var reportName = directory + "transaction-report-" + new Date().getTime();
+            service.generateCSVReport(tableName, query, reportName, reportMaxLength);
+            print({'message': 'Report is generating'});
+            return;
+
+        } else if (action == "available") {
+            var file = new File(userReportDirectory);
+            var files = [];
+            for (var i = 0; i < file.listFiles().length; i++) {
+                files[i] = {"name": file.listFiles()[i].getName(), "index": i};
+            }
+
+            print(files);
+            return;
+
+        } else if (action == "get" && request.getParameter("index") != null) {
+            var file = new File(userReportDirectory).listFiles()[request.getParameter("index")];
+            response.contentType = "application/octet-stream";
+            response.addHeader("Content-Disposition", "attachment; filename=" + file.getName());
+            print(file.getStream());
+
+        } else if (action == "remove" && request.getParameter("index") != null) {
+            var file = new File(userReportDirectory);
+            var result = file.listFiles()[request.getParameter("index")].del();
+            print({"fileDeleted": result});
+            return;
         }
 
-          function myFunc() {
-                 log.info("Required within a function");
-           }
+
+    }
+
+    function myFunc() {
+        log.info("Required within a function");
+    }
 
 }());
 
