@@ -108,7 +108,7 @@
         <ColumnDefinition>
          <Name>serviceProviderId</Name>
          <IsFacet>false</IsFacet>
-         <EnableIndexing>false</EnableIndexing>
+         <EnableIndexing>true</EnableIndexing>
          <IsPrimaryKey>false</IsPrimaryKey>
          <EnableScoreParam>false</EnableScoreParam>
          <Type>STRING</Type>
@@ -196,7 +196,7 @@
       <ColumnDefinition>
          <Name>apiPublisherID</Name>
          <IsFacet>false</IsFacet>
-         <EnableIndexing>false</EnableIndexing>
+         <EnableIndexing>true</EnableIndexing>
          <IsPrimaryKey>false</IsPrimaryKey>
          <EnableScoreParam>false</EnableScoreParam>
          <Type>STRING</Type>
@@ -204,7 +204,7 @@
       <ColumnDefinition>
          <Name>apiID</Name>
          <IsFacet>false</IsFacet>
-         <EnableIndexing>false</EnableIndexing>
+         <EnableIndexing>true</EnableIndexing>
          <IsPrimaryKey>false</IsPrimaryKey>
          <EnableScoreParam>false</EnableScoreParam>
          <Type>STRING</Type>
@@ -212,7 +212,7 @@
       <ColumnDefinition>
          <Name>department</Name>
          <IsFacet>false</IsFacet>
-         <EnableIndexing>false</EnableIndexing>
+         <EnableIndexing>true</EnableIndexing>
          <IsPrimaryKey>false</IsPrimaryKey>
          <EnableScoreParam>false</EnableScoreParam>
          <Type>STRING</Type>
@@ -220,7 +220,7 @@
       <ColumnDefinition>
          <Name>applicationId</Name>
          <IsFacet>false</IsFacet>
-         <EnableIndexing>false</EnableIndexing>
+         <EnableIndexing>true</EnableIndexing>
          <IsPrimaryKey>false</IsPrimaryKey>
          <EnableScoreParam>false</EnableScoreParam>
          <Type>STRING</Type>
