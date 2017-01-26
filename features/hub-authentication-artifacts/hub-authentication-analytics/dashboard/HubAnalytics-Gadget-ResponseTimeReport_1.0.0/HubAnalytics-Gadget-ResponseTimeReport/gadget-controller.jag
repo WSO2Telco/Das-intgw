@@ -24,36 +24,50 @@
     var PROVIDER_NAME = 'provider-name';
 
     var action = request.getParameter("action");
+    var filter = request.getParameter("filter");
     var data = request.getContent();
     var providerConf = data[PROVIDER_CONF];
+    var department = "";
+    var role = "";
+    var serviceProvider = "";
 
 
-var log = new Log();
-
-
-
+    var log = new Log();
     var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
 
     if (action === 'getSchema') {
         print(providerAPI.getSchema(providerConf));
         return;
     } else if(action === 'getData'){
-
+        providerConf.query = "";
         //Check logged in user role and decide which operators to load
-        var allOperators = false;
+        var all = true;
         var currentOperator;
         var user = session.get('user');
+
+        log.info("user"+ stringify(user));
+
+        var carbon = require('carbon');
+        var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
+        var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
+        var userRealm = userRealmService.getTenantUserRealm(tenantId);
+        var userStore = userRealm.getUserStoreManager();
+        var claim = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/identity/department', null);
+
         for (var i =0; i < user.roles.length; i++) {
-            if (user.roles[i] == "admin") {
-                allOperators = true;
+            if (user.roles[i] == "admin" || user.roles[i] == "internal-gateway-admin") {
+                role = "admin";
                 break;
-            } else {
-                var operator = /hub-(.*)-(publisher|viewer)/.exec(user.roles[i]);
-                if (operator != undefined ) {
-                    currentOperator = operator[1];
-                } 
+            } else if(user.roles[i] == "business-unit-viewer"){
+                department = claim;
+                role = "viewer";
+                break;
+            } else if(user.roles[i] == "business-unit-publisher"){
+                role = "publisher";
+            } else if(user.roles[i] == "Internal/subscriber"){
+                role = "serviceProvider";
+                serviceProvider = user.username+"@"+user.domain;
             }
-        
         }
 
         if (providerConf[PROVIDER_NAME] == "batch") {
@@ -62,40 +76,50 @@ var log = new Log();
                     var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(data.dateStart, data.dateEnd);
 
                     var tableName = providerConf.tableName + timeUnit;
+                    providerConf.query += "eventTimeStamp:["+data.dateStart+" TO "+data.dateEnd+"]";
 
-                    providerConf.query = "eventTimeStamp:["+data.dateStart+" TO "+data.dateEnd+"]";
 
-                    if (allOperators) {
-                        if (data.operator.toLowerCase().trim() != "all") {
-                            providerConf.query +=  " AND operatorId:"+ data.operator;
-                        }
-                    } else {
-                        providerConf.query +=  " AND operatorId:"+ currentOperator;
+                    if (data.operator != "-1" && data.operator != undefined) {
+                           providerConf.query +=  " AND operatorId:"+ data.operator;
                     }
-
-                    if (data.serviceProvider.toLowerCase().trim() != "all") {
-                        providerConf.query +=  " AND serviceProvider:"+ "\""+ data.serviceProvider+ "\"";
+                    if (data.serviceProvider != "-1" && data.serviceProvider != undefined) {
+                           providerConf.query +=  " AND serviceProviderId:"+ "\""+ data.serviceProvider+ "\"";
                     }
-
-                    if (data.applicationName.toLowerCase().trim() != "all") {
-                        providerConf.query +=  " AND applicationName:"+ data.applicationName;
+                    if (data.applicationName != "-1" && data.applicationName != undefined) {
+                        providerConf.query +=  " AND applicationId:"+ data.applicationName;
                     }
-
-                    if (data.api.toLowerCase().trim() != "all") {
-                        providerConf.query +=  " AND api:"+ data.api;
+                    if (data.api != "-1" && data.api != undefined) {
+                        providerConf.query +=  " AND apiID:"+ data.api;
                     }
-
                     providerConf.tableName = tableName;
 
-        } else if(providerConf[PROVIDER_NAME] == "app") {
-                if (data.serviceProvider.toLowerCase().trim() != "all") {
-                    providerConf.query +=  "serviceProvider:"+ data.serviceProvider;
-                }
-        } else if (providerConf[PROVIDER_NAME] == "operator" && allOperators == false) {
-            print([{"operatorId" : currentOperator}]);
-            return;
+        } else if (providerConf[PROVIDER_NAME] == "operator") {
+                   if (data.operator != "-1" && data.operator != "(-1)" && data.operator != undefined) {
+                              providerConf.query +=  "operatorId:"+ data.operator;
+                              all = false;
+                   }
+        }else if(providerConf[PROVIDER_NAME] == "sp") {
+                    if(data.serviceProvider != "-1" && data.serviceProvider != "(-1)" && data.operator != undefined){
+                            providerConf.query +=  "serviceProviderId:"+ data.serviceProvider;
+                            all = false;
+                    }
+        }
+        else if(providerConf[PROVIDER_NAME] == "app") {
+                    if(data.applicationId!="-1" && data.applicationId!="(-1)" && data.operator != undefined){
+                            providerConf.query +=  "applicationId:"+ data.applicationId;
+                            all = false;
+                    }
         }
 
+ if(role =="viewer" && all == false){
+        providerConf.query +=  ' AND department:"'+department+'"';
+        }else if(role =="viewer" && all == true){
+        providerConf.query +=  ' department:"'+department+'"';
+        }else if(role =="serviceProvider"){
+        providerConf.query +=  ' serviceProvider:"'+serviceProvider+'"';
+        }
+        log.info(providerConf[PROVIDER_NAME]+"----------- data =>"+stringify(data));
+        log.info(providerConf[PROVIDER_NAME]+"----------- providerConf =>"+stringify(providerConf));
         print(providerAPI.getData(providerConf));
         return;
     }

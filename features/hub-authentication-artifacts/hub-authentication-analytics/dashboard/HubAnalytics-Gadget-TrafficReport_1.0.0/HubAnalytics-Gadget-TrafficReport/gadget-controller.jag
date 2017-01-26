@@ -44,22 +44,40 @@
         var all = true;
         var currentOperator;
         var user = session.get('user');
+<<<<<<< HEAD
         var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
         var tenantId = userRealmService.getTenantManager().getTenantId('carbon.super');
         var userRealm = userRealmService.getTenantUserRealm(tenantId);
         var userStore = userRealm.getUserStoreManager();
         var department = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/identity/department', null);
         log.info("user ===> "+stringify(user));
+=======
+
+        log.info("user"+ stringify(user));
+
+        var carbon = require('carbon');
+        var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
+        var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
+        var userRealm = userRealmService.getTenantUserRealm(tenantId);
+        var userStore = userRealm.getUserStoreManager();
+        var claim = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/identity/department', null);
+
+
+>>>>>>> 602a3d945a6c895f59b5cb2a0e144be4de7500c2
         for (var i =0; i < user.roles.length; i++) {
             if (user.roles[i] == "admin" || user.roles[i] == "internal-gateway-admin") {
                 role = "admin";
                 break;
             } else if(user.roles[i] == "business-unit-viewer"){
+<<<<<<< HEAD
+=======
+                department = claim;
+>>>>>>> 602a3d945a6c895f59b5cb2a0e144be4de7500c2
                 role = "viewer";
                 break;
-            }else if(user.roles[i] == "business-unit-publisher"){
+            } else if(user.roles[i] == "business-unit-publisher"){
                 role = "publisher";
-            }else if(user.roles[i] == "Internal/subscriber"){
+            } else if(user.roles[i] == "Internal/subscriber"){
                 role = "serviceProvider";
                 serviceProvider = user.username+"@"+user.domain;
             }
