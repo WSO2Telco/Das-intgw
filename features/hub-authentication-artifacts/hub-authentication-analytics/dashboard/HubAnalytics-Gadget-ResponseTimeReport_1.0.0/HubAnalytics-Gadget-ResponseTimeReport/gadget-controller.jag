@@ -27,7 +27,7 @@
     var filter = request.getParameter("filter");
     var data = request.getContent();
     var providerConf = data[PROVIDER_CONF];
-    var department = "";
+    var carbon = require('carbon');
     var role = "";
     var serviceProvider = "";
 
@@ -47,19 +47,18 @@
 
         log.info("user"+ stringify(user));
 
-        var carbon = require('carbon');
+
         var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
         var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
         var userRealm = userRealmService.getTenantUserRealm(tenantId);
         var userStore = userRealm.getUserStoreManager();
-        var claim = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/identity/department', null);
+        var department = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/identity/department', null);
 
         for (var i =0; i < user.roles.length; i++) {
             if (user.roles[i] == "admin" || user.roles[i] == "internal-gateway-admin") {
                 role = "admin";
                 break;
             } else if(user.roles[i] == "business-unit-viewer"){
-                department = claim;
                 role = "viewer";
                 break;
             } else if(user.roles[i] == "business-unit-publisher"){
@@ -70,6 +69,10 @@
             }
         }
 
+         if(role == ""){
+            return;
+         }
+
         if (providerConf[PROVIDER_NAME] == "batch") {
 
                     var timeRangeUtil = Packages.org.wso2.analytics.shared.util.time.TimeRangeUtils;
@@ -77,7 +80,6 @@
 
                     var tableName = providerConf.tableName + timeUnit;
                     providerConf.query += "eventTimeStamp:["+data.dateStart+" TO "+data.dateEnd+"]";
-
 
                     if (data.operator != "-1" && data.operator != undefined) {
                            providerConf.query +=  " AND operatorId:"+ data.operator;
@@ -111,16 +113,30 @@
                     }
         }
 
- if(role =="viewer" && all == false){
-        providerConf.query +=  ' AND department:"'+department+'"';
-        }else if(role =="viewer" && all == true){
-        providerConf.query +=  ' department:"'+department+'"';
-        }else if(role =="serviceProvider"){
-        providerConf.query +=  ' serviceProvider:"'+serviceProvider+'"';
+        var andSign = '';
+        if((role != "admin" &&  all == false) || (providerConf[PROVIDER_NAME] == "batch")){
+         andSign =  ' AND ';
         }
-        log.info(providerConf[PROVIDER_NAME]+"----------- data =>"+stringify(data));
-        log.info(providerConf[PROVIDER_NAME]+"----------- providerConf =>"+stringify(providerConf));
+        log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch"));
+        if(role =="viewer" && providerConf[PROVIDER_NAME] == "operator"){
+          providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+          providerConf.query +=  andSign +' department:"'+department+'"';
+          var viwerOperator = [];
+          viwerOperator.push(providerAPI.getData(providerConf)[0]);
+          print(viwerOperator);
+          return;
+        }else if(role =="viewer" && providerConf[PROVIDER_NAME] == "batch"){
+          providerConf.query +=  andSign +' department:"'+department+'"';
+        }else if(role =="serviceProvider" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
+           var serviceProviderName = user.username +"@"+ user.domain;
+          providerConf.query +=  andSign +' serviceProviderName:"'+serviceProviderName+'"';
+        }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
+          providerConf.query +=  andSign +' serviceProvider:"'+serviceProvider+'"';
+        }
+        log.info("providerConf => "+stringify(providerConf));
+        log.info("providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
         print(providerAPI.getData(providerConf));
+
         return;
     }
 

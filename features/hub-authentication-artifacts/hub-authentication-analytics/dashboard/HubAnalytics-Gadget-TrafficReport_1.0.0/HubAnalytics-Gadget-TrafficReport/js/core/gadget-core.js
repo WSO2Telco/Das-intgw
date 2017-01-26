@@ -122,20 +122,19 @@ $(function () {
             contentType: "application/json",
             async: false,
             success: function (data) {
-                alert(JSON.stringify(data));
+
                 $("#dropdown-operator").empty();
                 var operatorsItems = "";
                 var operatorIds = [];
                 operatorIds.push(operatorId);
                 operatorsItems += '<li><a data-val="-1" href="#">All</a></li>';
-                alert(data.length);
+
                 for (var i =0 ; i < data.length; i++) {
                     var operator = data[i];
-                    alert(operator);
                     operatorsItems += '<li><a data-val='+ operator.operatorId +' href="#">' + operator.operatorName +'</a></li>';
                     operatorIds.push(" "+operator.operatorId);
                 }
-                alert(JSON.stringify(operatorIds));
+
                 $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
                 $("#button-operator").val('<li><a data-val="-1" href="#">All</a></li>');
                 loadSP(operatorIds);
