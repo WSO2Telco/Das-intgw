@@ -34,7 +34,7 @@
     var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
     var userRealm = userRealmService.getTenantUserRealm(tenantId);
     var userStore = userRealm.getUserStoreManager();
-    var claim = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/identity/department', null);
+    var claim = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/department', null);
 
     var department = "";
     var role = "";
