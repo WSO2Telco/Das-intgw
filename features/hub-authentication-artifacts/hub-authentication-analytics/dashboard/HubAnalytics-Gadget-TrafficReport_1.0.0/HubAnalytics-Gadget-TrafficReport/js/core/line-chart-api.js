@@ -121,7 +121,6 @@ var getConfig, validate, isProviderRequired, draw, update;
             groupData.forEach(function(row2) {
                 if (groupRow[arcConfig.color] == row2[arcConfig.color]) {
                     notAvailable = false;
-
                     if (lineCharGroupRow['eventTimeStamp'] == row2['eventTimeStamp']) {
                         notAvailableForLineChart = false;
                     }
@@ -142,23 +141,15 @@ var getConfig, validate, isProviderRequired, draw, update;
                 groupData.push(groupRow);
             }
 
-
             if (notAvailableForLineChart) {
                 lineCharGroupRow[arcConfig.x] = 0;
-
                 data.forEach(function(row3) {
                     if ((lineCharGroupRow[arcConfig.color] == row3[arcConfig.color]) && (lineCharGroupRow['eventTimeStamp'] == row3['eventTimeStamp'])) {
                         lineCharGroupRow[arcConfig.x] += row3[arcConfig.x];
                     }
                 });
-
                 lineChartGroupData.push(lineCharGroupRow);
             }
-
-
-
-
-
         });
 
         var view2 = {
