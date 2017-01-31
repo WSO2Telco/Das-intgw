@@ -49,4 +49,4 @@ provided by the very same engineers who build the technology.
 For additional support information please refer to http://wso2telco.com/services
 
 ---------------------------------------------------------------------------
-(c)  2016, WSO2.Telco Inc.
+(c)  2017, WSO2.Telco Inc.

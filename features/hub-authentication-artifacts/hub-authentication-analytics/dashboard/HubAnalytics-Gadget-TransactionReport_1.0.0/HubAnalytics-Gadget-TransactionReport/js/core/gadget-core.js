@@ -288,7 +288,11 @@ $(function () {
         function loadApi (apps){
             conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             conf["provider-conf"]["provider-name"] = "app";
-            conf.applicationId = "("+apps+")";;
+            if(apps == ""){
+                conf.applicationId = "('"+apps+"')";
+            } else {
+                conf.applicationId = "("+apps+")";
+            }
             apiId = -1;
             $.ajax({
                 url: gadgetLocation + '/gadget-controller.jag?action=getData',
