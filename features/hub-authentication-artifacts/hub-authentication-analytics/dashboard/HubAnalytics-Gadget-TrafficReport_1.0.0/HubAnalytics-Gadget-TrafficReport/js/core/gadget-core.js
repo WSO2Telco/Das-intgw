@@ -122,16 +122,28 @@ $(function () {
             contentType: "application/json",
             async: false,
             success: function (data) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 40080366f2d251b0d4a051ccfd30509c897f2662
                 $("#dropdown-operator").empty();
                 var operatorsItems = "";
                 var operatorIds = [];
                 operatorIds.push(operatorId);
                 operatorsItems += '<li><a data-val="-1" href="#">All</a></li>';
+<<<<<<< HEAD
+=======
+
+>>>>>>> 40080366f2d251b0d4a051ccfd30509c897f2662
                 for (var i =0 ; i < data.length; i++) {
                     var operator = data[i];
                     operatorsItems += '<li><a data-val='+ operator.operatorId +' href="#">' + operator.operatorName +'</a></li>';
                     operatorIds.push(" "+operator.operatorId);
                 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 40080366f2d251b0d4a051ccfd30509c897f2662
                 $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
                 $("#button-operator").val('<li><a data-val="-1" href="#">All</a></li>');
                 loadSP(operatorIds);
