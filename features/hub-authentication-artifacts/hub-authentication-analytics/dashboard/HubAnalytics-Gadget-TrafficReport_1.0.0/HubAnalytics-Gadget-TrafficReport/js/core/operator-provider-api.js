@@ -180,6 +180,7 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
 
         }
         result = JSON.parse(result);
+        log.info(result);
         var data = [];
         for (var i = 0; i < result.length; i++) {
             var values = result[i].values;
