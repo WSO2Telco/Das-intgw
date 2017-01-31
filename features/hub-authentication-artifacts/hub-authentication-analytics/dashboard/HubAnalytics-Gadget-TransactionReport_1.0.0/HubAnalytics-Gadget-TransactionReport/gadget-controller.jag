@@ -98,13 +98,13 @@
         if((role != "admin" &&  all == false) || (providerConf[PROVIDER_NAME] == "batch")){
             andSign =  ' AND ';
         }
-        //log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch"));
+        log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch"));
         if(role =="viewer" && providerConf[PROVIDER_NAME] == "operator"){
 
             providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             providerConf.query +=  andSign +' department:"'+department+'"';
             var viwerOperator = [];
-            //log.info("providerConf operator => "+stringify(providerConf));
+            log.info("providerConf operator => "+stringify(providerConf));
             //        viwerOperator.push(providerAPI.getData(providerConf)[0]);
             print(providerAPI.getData(providerConf));
             return;
@@ -115,7 +115,7 @@
             providerConf.query +=  andSign +' serviceProvider:"'+serviceProviderName+'"';
             providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             var viwerSp= [];
-            //log.info("providerConf serviceProvider => "+stringify(providerConf));
+            log.info("providerConf serviceProvider => "+stringify(providerConf));
             viwerSp.push(providerAPI.getData(providerConf)[0]);
             print(viwerSp);
             return;
@@ -126,8 +126,8 @@
         }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
             providerConf.query +=  andSign +' serviceProvider:"'+serviceProvider+'"';
         }
-        //log.info("providerConf => "+stringify(providerConf));
-        //log.info("providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
+        log.info("providerConf => "+stringify(providerConf));
+        log.info("providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
         print(providerAPI.getData(providerConf));
 
         return;
@@ -153,22 +153,22 @@
 
             var providerConf = data[PROVIDER_CONF];
             var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
-            //log.info('providerConf[PROVIDER_NAME] ' + providerConf[PROVIDER_NAME]);
+            log.info('providerConf[PROVIDER_NAME] ' + providerConf[PROVIDER_NAME]);
 
             providerConf.query = "responseTime:[" + data.dateStart + " TO " + data.dateEnd + "]";
 
             if (data.operator != "-1" && data.operator != undefined) {
                 providerConf.query += " AND operatorId:'" + data.operator + "'";
             }
-            //log.info("data.operator => " + data.operator + "  => " + providerConf.query);
+            log.info("data.operator => " + data.operator + "  => " + providerConf.query);
             if (data.serviceProvider != "-1" && data.serviceProvider != undefined) {
                 providerConf.query += " AND serviceProviderId:'" + data.serviceProvider + "'";
             }
-            //log.info("data.serviceProvider => " + data.serviceProvider + "  => " + providerConf.query);
+            log.info("data.serviceProvider => " + data.serviceProvider + "  => " + providerConf.query);
             if (data.applicationName != "-1" && data.applicationName != undefined) {
                 providerConf.query += " AND applicationId:" + data.applicationName;
             }
-            //log.info("data.applicationName => " + data.applicationName + "  => " + providerConf.query);
+            log.info("data.applicationName => " + data.applicationName + "  => " + providerConf.query);
             if (data.api != "-1" && data.api != undefined) {
                 providerConf.query += " AND apiID:" + data.api;
             }
@@ -178,8 +178,8 @@
             } else if (role == "serviceProvider") {
                 providerConf.query += ' AND serviceProvider:"' + serviceProvider + '"';
             }
-            //log.info(providerConf[PROVIDER_NAME] + "----------- data =>" + stringify(data));
-            //log.info(providerConf[PROVIDER_NAME] + "----------- providerConf =>" + stringify(providerConf));
+            log.info(providerConf[PROVIDER_NAME] + "----------- data =>" + stringify(data));
+            log.info(providerConf[PROVIDER_NAME] + "----------- providerConf =>" + stringify(providerConf));
 
             var reportName = directory + user.username + "-transaction-report-" + new Date().getTime();
             service.generateCSVReport(tableName, providerConf.query, reportName, reportMaxLength);
