@@ -201,7 +201,7 @@ var getConfig, validate, isProviderRequired, draw, update;
         conf.color = _chartConfig.color;
         conf.width = 600;
         conf.xType = _chartConfig.xType;
-        conf.padding = { "top": 0, "left": 70, "bottom": 40, "right": 20 };
+        conf.padding= {"top": 5, "left": 70, "bottom": 40, "right": 20};
         conf.yType = "linear";
         conf.maxLength = _chartConfig.maxLength;
         conf.charts = [];
