@@ -52,11 +52,9 @@ public class CSVWriter {
 //      sb.append(',');
         sb.append("Response Code");
         sb.append(System.getProperty("line.separator"));
-        bufferedWriter.write(sb.toString());
 
         if (records.size() > 0) {
             for (Record record : records) {
-                sb = new StringBuilder();
                 sb.append(record.getValues().get("api"));
                 sb.append(',');
 //              sb.append(record.getValues().get("msisdn"));
@@ -73,8 +71,8 @@ public class CSVWriter {
 //              sb.append(',');
                 sb.append(record.getValues().get("responseCode"));
                 sb.append(System.getProperty("line.separator"));
-                bufferedWriter.write(sb.toString());
             }
+            bufferedWriter.write(sb.toString());
         }else{
             bufferedWriter.write("No data available for this date range");
         }

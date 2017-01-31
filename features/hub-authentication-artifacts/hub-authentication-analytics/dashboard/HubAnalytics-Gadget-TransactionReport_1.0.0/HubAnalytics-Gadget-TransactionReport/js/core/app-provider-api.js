@@ -181,9 +181,13 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
         }
         result = JSON.parse(result);
         var data = [];
+        log.info("app provider data  "+result);
         for (var i = 0; i < result.length; i++) {
+            log.info("app provider data  "+stringify(result[i]));
+          if(stringify(result[i]) != null){
             var values = result[i].values;
             data.push(values);
+          }
         }
         return data;
     };

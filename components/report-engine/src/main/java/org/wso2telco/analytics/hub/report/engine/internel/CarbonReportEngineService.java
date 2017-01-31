@@ -76,7 +76,7 @@ class ReportEngineGenerator implements Runnable {
             if (searchCount > maxLength) {
                 for (int i = 0; i < searchCount; ) {
                     int end = i + maxLength;
-                    String filepath = reportName +"-" + ".csv";
+                    String filepath = reportName +"-"+i+"-"+end+".csv";
                     generateCSV(tableName, query, filepath, tenantId, i, end, writeBufferLength);
                     i = end;
                 }
