@@ -139,8 +139,8 @@
         }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
           providerConf.query +=  andSign +' serviceProvider:"'+serviceProvider+'"';
         }
-        log.info("providerConf => "+stringify(providerConf));
-        log.info("providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
+        log.info(providerConf[PROVIDER_NAME] +"   providerConf ------------- =>  "+stringify(providerConf));
+  //      log.info(providerConf[PROVIDER_NAME] +"   providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
         print(providerAPI.getData(providerConf));
 
         return;

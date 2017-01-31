@@ -127,7 +127,7 @@
             providerConf.query +=  andSign +' serviceProvider:"'+serviceProvider+'"';
         }
         log.info("providerConf => "+stringify(providerConf));
-        log.info("providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
+//        log.info("providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
         print(providerAPI.getData(providerConf));
 
         return;

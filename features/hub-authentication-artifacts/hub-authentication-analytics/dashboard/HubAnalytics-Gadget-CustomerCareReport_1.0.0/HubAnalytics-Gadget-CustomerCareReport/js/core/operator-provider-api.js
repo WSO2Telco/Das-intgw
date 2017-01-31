@@ -182,8 +182,10 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
         result = JSON.parse(result);
         var data = [];
         for (var i = 0; i < result.length; i++) {
-            var values = result[i].values;
-            data.push(values);
+          if(result[i] != null){
+           var values = result[i].values;
+           data.push(values);
+         }  
         }
         return data;
     };
