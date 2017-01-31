@@ -137,8 +137,8 @@
                         </div>
 
                         <div class="col-xs-3">
-                            <span class="btn-label">MSISDN :    </span>
-                            <input type="text" class="form-control" id="txt-msisdn">
+                            <span class="btn-label">MSISDN : </span>
+                            <input type="text" class="form-control" id="txt-msisdn" disabled>
                         </div>
                      
                         <div class="col-xs-3">
