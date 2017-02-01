@@ -59,15 +59,13 @@
                    break;
              } else if(user.roles[i] == "business-unit-publisher"){
                    role = "publisher";
+                   break;
              } else if(user.roles[i] == "Internal/subscriber"){
                    role = "serviceProvider";
                    serviceProvider = user.username+"@"+user.domain;
+                   break;
              }
          }
-
-        if(role == ""){
-           return;
-        }
 
         if (providerConf[PROVIDER_NAME] == "batch") {
 
@@ -111,9 +109,7 @@
 
           providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
           providerConf.query +=  andSign +' department:"'+department+'"';
-          var viwerOperator = [];
           log.info("providerConf operator => "+stringify(providerConf));
-  //        viwerOperator.push(providerAPI.getData(providerConf)[0]);
           print(providerAPI.getData(providerConf));
           return;
         }else if(role =="viewer" && providerConf[PROVIDER_NAME] == "batch"){

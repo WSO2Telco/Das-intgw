@@ -69,10 +69,6 @@
             }
         }
 
-         if(role == ""){
-            return;
-         }
-
         if (providerConf[PROVIDER_NAME] == "batch") {
 
                     var timeRangeUtil = Packages.org.wso2.analytics.shared.util.time.TimeRangeUtils;
