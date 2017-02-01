@@ -93,7 +93,7 @@
                             all = false;
                   }
         }else if(providerConf[PROVIDER_NAME] == "app") {
-                  if(data.applicationId!="-1" && data.applicationId!="(-1)" && data.operator != undefined){
+                  if(data.applicationId!="()" && data.applicationId!="-1" && data.applicationId!="(-1)" && data.operator != undefined){
                         providerConf.query +=  "applicationId:"+ data.applicationId;
                         all = false;
                   }
