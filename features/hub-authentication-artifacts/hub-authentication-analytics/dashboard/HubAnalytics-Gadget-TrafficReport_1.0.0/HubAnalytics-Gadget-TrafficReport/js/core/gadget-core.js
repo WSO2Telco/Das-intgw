@@ -41,11 +41,11 @@ $(function () {
                 conf.applicationName = applicationId;
                 conf.dateStart = moment(moment($("#reportrange").text().split("-")[0]).format("MMMM D, YYYY hh:mm A")).valueOf();
                 conf.dateEnd = moment(moment($("#reportrange").text().split("-")[1]).format("MMMM D, YYYY hh:mm A")).valueOf();
-                if($("#button-type").val().toLowerCase().trim() == "error traffic") {
+                /*if($("#button-type").val().toLowerCase().trim() == "error traffic") {
                     conf["provider-conf"].tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_FAILURE_SUMMARY_PER_DAY";
-                } else {
+                } else {*/
                     conf["provider-conf"].tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_TRAFFIC_SUMMARY_PER_DAY";
-                }
+                //}
 
                 $.ajax({
                     url: gadgetLocation + '/gadget-controller.jag?action=getSchema',
@@ -63,11 +63,11 @@ $(function () {
 
     var getProviderData = function (){
 
-        if($("#button-type").val().toLowerCase().trim() == "error traffic") {
+        /*if($("#button-type").val().toLowerCase().trim() == "error traffic") {
             conf["provider-conf"].tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_FAILURE_SUMMARY_PER_";
-        } else {
+        } else {*/
             conf["provider-conf"].tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_TRAFFIC_SUMMARY_PER_";
-        }
+        //}
 
         $.ajax({
             url: gadgetLocation + '/gadget-controller.jag?action=getData',
@@ -296,7 +296,7 @@ $(function () {
 
         $("#button-app").val("All");
         $("#button-api").val("All");
-        $("#button-type").val("Api Traffic");
+        //$("#button-type").val("Api Traffic");
 
         $('input[name="daterange"]').daterangepicker({
             timePicker: true,
@@ -307,11 +307,11 @@ $(function () {
         });
     });
 
-    $("#dropdown-type li a").click(function(){
+    /*$("#dropdown-type li a").click(function(){
         $("#button-type").text($(this).text());
         $("#button-type").append('<span class="caret"></span>');
         $("#button-type").val($(this).text());
-    });
+    });*/
 
 
 
