@@ -162,7 +162,7 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
         var tableName = providerConfig.tableName;
         var query = providerConfig.query;
 
-        var limit = 100;
+        var limit = 100000;
         if (providerConfig.limit) {
             limit = providerConfig.limit;
         }
@@ -172,14 +172,19 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
             var filter = {
                 "query": query,
                 "start": 0,
-                "count": limit
+                "count": limit,
+                "sortBy" : [
+                    {
+                        field : "responseTime",
+                        sortType : "DESC",
+                    }
+                ]
             };
             result = connector.search(loggedInUser, tableName, stringify(filter)).getMessage();
         } else {
             var from = JS_MIN_VALUE;
             var to = JS_MAX_VALUE;
             result = connector.getRecordsByRange(loggedInUser, tableName, from, to, 0, limit, null).getMessage();
-
         }
         result = JSON.parse(result);
         var data = [];
