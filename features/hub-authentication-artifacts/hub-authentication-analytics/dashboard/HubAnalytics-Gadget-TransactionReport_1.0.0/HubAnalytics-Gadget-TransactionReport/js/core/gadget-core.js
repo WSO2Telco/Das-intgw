@@ -26,7 +26,7 @@ $(function () {
     var PROVIDER_CONF = 'provider-conf';
 
     var REFRESH_INTERVAL = 'refreshInterval';
-    var operatorId = -1, serviceProviderId = -1, apiId = -1, applicationId = -1;
+    var operatorId = 0, serviceProviderId = 0, apiId = 0, applicationId = 0;
 
     var init = function () {
         $.ajax({
@@ -153,8 +153,7 @@ $(function () {
         function loadOperator (){
             conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_OPERATOR_SUMMARY";
             conf["provider-conf"]["provider-name"] = "operator";
-            conf.operator = -1;
-            operatorId = -1;
+            conf.operator = 0;
             $.ajax({
                 url: gadgetLocation + '/gadget-controller.jag?action=getData',
                 method: "POST",
@@ -166,14 +165,14 @@ $(function () {
                     var operatorsItems = "";
                     var operatorIds = [];
                     operatorIds.push(operatorId);
-                    operatorsItems += '<li><a data-val="-1" href="#">All</a></li>';
+                    operatorsItems += '<li><a data-val="0" href="#">All</a></li>';
                     for (var i =0 ; i < data.length; i++) {
                         var operator = data[i];
                         operatorsItems += '<li><a data-val='+ operator.operatorId +' href="#">' + operator.operatorName +'</a></li>';
                         operatorIds.push(" "+operator.operatorId);
                     }
                     $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
-                    $("#button-operator").val('<li><a data-val="-1" href="#">All</a></li>');
+                    $("#button-operator").val('<li><a data-val="0" href="#">All</a></li>');
                     loadSP(operatorIds);
 
                     $("#dropdown-operator li a").click(function(){
@@ -192,8 +191,6 @@ $(function () {
             conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             conf["provider-conf"]["provider-name"] = "operator";
             conf.operator =  "("+clickedOperator+")";
-            serviceProviderId =-1;
-
             $.ajax({
                 url: gadgetLocation + '/gadget-controller.jag?action=getData',
                 method: "POST",
@@ -206,7 +203,7 @@ $(function () {
                     var spIds = [];
                     var loadedSps = [];
                     spIds.push(serviceProviderId);
-                    spItems += '<li><a data-val="-1" href="#">All</a></li>';
+                    spItems += '<li><a data-val="0" href="#">All</a></li>';
                     for ( var i =0 ; i < data.length; i++) {
                         var sp = data[i];
                         if($.inArray(sp.serviceProviderId, loadedSps)<0){
@@ -219,7 +216,7 @@ $(function () {
                     $("#dropdown-sp").html(spItems);
 
                     $("#button-sp").text('All');
-                    $("#button-sp").val('<li><a data-val="-1" href="#">All</a></li>');
+                    $("#button-sp").val('<li><a data-val="0" href="#">All</a></li>');
                     loadApp(spIds);
                     $("#dropdown-sp li a").click(function(){
 
@@ -243,7 +240,6 @@ $(function () {
         // if(sps)
         conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
         conf["provider-conf"]["provider-name"] = "sp";
-        applicationId = -1;
         conf.serviceProvider = "("+sps+")";
         $.ajax({
             url: gadgetLocation + '/gadget-controller.jag?action=getData',
@@ -256,7 +252,7 @@ $(function () {
                 $("#dropdown-app").empty();
                 var apps = [];
                 var loadedApps = [];
-                var appItems = '<li><a data-val="-1" href="#">All</a></li>';
+                var appItems = '<li><a data-val="0" href="#">All</a></li>';
                 for ( var i =0 ; i < data.length; i++) {
                     var app = data[i];
                     if($.inArray(app.applicationId, loadedApps)<0){
@@ -267,7 +263,7 @@ $(function () {
                 }
 
                 $("#dropdown-app").html( $("#dropdown-app").html() + appItems);
-                $("#button-app").val('<li><a data-val="-1" href="#">All</a></li>');
+                $("#button-app").val('<li><a data-val="0" href="#">All</a></li>');
                 $("#button-app").text('All');
                 // loadApp(sps[i]);
 
@@ -293,7 +289,7 @@ $(function () {
       conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
       conf["provider-conf"]["provider-name"] = "app";
       conf.applicationId = "("+apps+")";;
-      apiId = -1;
+      apiId = 0;
       $.ajax({
           url: gadgetLocation + '/gadget-controller.jag?action=getData',
           method: "POST",
@@ -306,7 +302,7 @@ $(function () {
               $("#dropdown-api").empty();
               var apis = [];
               var loadedApis = [];
-              var apiItems = '<li><a data-val="-1" href="#">All</a></li>';
+              var apiItems = '<li><a data-val="0" href="#">All</a></li>';
               for ( var i =0 ; i < data.length; i++) {
                   var api = data[i];
                   if($.inArray(api.apiID, loadedApis)<0){
@@ -316,7 +312,7 @@ $(function () {
               }
 
               $("#dropdown-api").html( $("#dropdown-api").html() + apiItems);
-              $("#button-api").val('<li><a data-val="-1" href="#">All</a></li>');
+              $("#button-api").val('<li><a data-val="0" href="#">All</a></li>');
               $("#button-api").text('All');
               // loadApp(sps[i]);
               $("#dropdown-api li a").click(function(){
