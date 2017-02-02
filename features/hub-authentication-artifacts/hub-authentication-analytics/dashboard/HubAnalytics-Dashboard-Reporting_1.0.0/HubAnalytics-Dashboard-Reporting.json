@@ -74,7 +74,8 @@
                         "roles":[
                             "admin",
                             "business-unit-viewer",
-                            "Internal/subscriber"
+                            "Internal/subscriber",
+                            "internal-gateway-admin"
                         ]
                     }
                 }
@@ -140,7 +141,8 @@
                         "roles":[
                             "admin",
                             "business-unit-viewer",
-                            "Internal/subscriber"
+                            "Internal/subscriber",
+                            "internal-gateway-admin"
                         ]
                     }
                 }
@@ -210,7 +212,8 @@
                             "admin",
                             "business-unit-viewer",
                             "customercare",
-                            "Internal/subscriber"
+                            "Internal/subscriber",
+                            "internal-gateway-admin"
                         ]
                     },
                     "view0":{
@@ -285,7 +288,8 @@
                         "roles":[
                             "admin",
                             "business-unit-viewer",
-                            "Internal/subscriber"
+                            "Internal/subscriber",
+                            "internal-gateway-admin"
                         ]
                     }
                 }
