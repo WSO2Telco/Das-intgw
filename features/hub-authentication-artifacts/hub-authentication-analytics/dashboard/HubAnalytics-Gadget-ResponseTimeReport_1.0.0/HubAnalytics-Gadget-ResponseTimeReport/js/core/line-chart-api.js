@@ -62,6 +62,7 @@ var getConfig, validate, isProviderRequired, draw, update;
     }
 
 
+
     /**
      * return the gadget content
      * @param chartConfig
@@ -73,16 +74,17 @@ var getConfig, validate, isProviderRequired, draw, update;
         var schema = toVizGrammarSchema(_schema);
         chartConfig.color = "api";
         chartConfig.count = "totalResponseTimeCount";
-        groupData = groupData(data);
+        var groupDta = [];
+        groupDta = groupData(data);
 
         var view = {
             id: "chart-0",
             schema: schema,
             chartConfig: buildChartConfig(chartConfig),
             data: function() {
-                if (groupData) {
+                if (groupDta) {
                     var result = [];
-                    groupData.forEach(function(item) {
+                    groupDta.forEach(function(item) {
                         var row = [];
                         schema[0].metadata.names.forEach(function(name) {
                             row.push(item[name]);
