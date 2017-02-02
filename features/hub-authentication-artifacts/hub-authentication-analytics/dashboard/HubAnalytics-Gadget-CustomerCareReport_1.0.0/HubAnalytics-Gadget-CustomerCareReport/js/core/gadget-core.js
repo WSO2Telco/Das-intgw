@@ -101,41 +101,45 @@ $(function () {
 
 
     function loadOperator (){
-        conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_OPERATOR_SUMMARY";
-        conf["provider-conf"]["provider-name"] = "operator";
-        conf.operator = 0;
-        operatorId = 0;
-        $.ajax({
-            url: gadgetLocation + '/gadget-controller.jag?action=getData',
-            method: "POST",
-            data: JSON.stringify(conf),
-            contentType: "application/json",
-            async: false,
-            success: function (data) {
-                $("#dropdown-operator").empty();
-                var operatorsItems = "";
-                var operatorIds = [];
-                operatorIds.push(operatorId);
-                operatorsItems += '<li><a data-val="0" href="#">All</a></li>';
-                for (var i =0 ; i < data.length; i++) {
-                    var operator = data[i];
-                    operatorsItems += '<li><a data-val='+ operator.operatorId +' href="#">' + operator.operatorName +'</a></li>';
-                    operatorIds.push(" "+operator.operatorId);
-                }
-                $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
-                $("#button-operator").val('<li><a data-val="0" href="#">All</a></li>');
-                loadSP(operatorIds);
+                conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_OPERATOR_SUMMARY";
+                conf["provider-conf"]["provider-name"] = "operator";
+                conf.operator = 0;
+                operatorId = 0;
+                $.ajax({
+                    url: gadgetLocation + '/gadget-controller.jag?action=getData',
+                    method: "POST",
+                    data: JSON.stringify(conf),
+                    contentType: "application/json",
+                    async: false,
+                    success: function (data) {
+                        $("#dropdown-operator").empty();
+                        var operatorsItems = "";
+                        var operatorIds = [];
+                        var loadedOperator = [];
+                        operatorIds.push(operatorId);
+                        operatorsItems += '<li><a data-val="0" href="#">All</a></li>';
+                        for (var i =0 ; i < data.length; i++) {
+                            var operator = data[i];
+                            if($.inArray(operator.operatorId, loadedOperator)<0){
+                            operatorsItems += '<li><a data-val='+ operator.operatorId +' href="#">' + operator.operatorName +'</a></li>';
+                            operatorIds.push(" "+operator.operatorId);
+                            loadedOperator.push(operator.operatorId);
+                          }
+                        }
+                        $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
+                        $("#button-operator").val('<li><a data-val="0" href="#">All</a></li>');
+                        loadSP(operatorIds);
 
-                $("#dropdown-operator li a").click(function(){
-                    $("#button-operator").text($(this).text());
-                    $("#button-operator").append('<span class="caret"></span>');
-                    $("#button-operator").val($(this).text());
-                    operatorIds = $(this).data('val');
-                    loadSP(operatorIds);
+                        $("#dropdown-operator li a").click(function(){
+                            $("#button-operator").text($(this).text());
+                            $("#button-operator").append('<span class="caret"></span>');
+                            $("#button-operator").val($(this).text());
+                            operatorIds = $(this).data('val');
+                            loadSP(operatorIds);
+                        });
+                    }
                 });
-            }
-        });
-      }
+              }
 
       function loadSP (clickedOperator){
 
