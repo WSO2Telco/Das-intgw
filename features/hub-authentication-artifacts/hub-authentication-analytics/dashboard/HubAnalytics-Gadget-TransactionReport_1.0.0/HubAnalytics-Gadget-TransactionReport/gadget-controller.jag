@@ -75,19 +75,19 @@
         var all = true;
 
         if (providerConf[PROVIDER_NAME] == "operator") {
-            if (data.operator != "-1" && data.operator != "(-1)" && data.operator != undefined) {
+            if (data.operator != "0" && data.operator != "(0)" && data.operator != undefined) {
                 providerConf.query += "operatorId:" + data.operator;
                 all = false;
             }
         } else if (providerConf[PROVIDER_NAME] == "sp") {
 
-            if (data.serviceProvider != "-1" && data.serviceProvider != "(-1)" && data.operator != undefined) {
+            if (data.serviceProvider != "0" && data.serviceProvider != "(0)" && data.operator != undefined) {
                 providerConf.query += "serviceProviderId:" + data.serviceProvider;
                 all = false;
             }
         }
         else if (providerConf[PROVIDER_NAME] == "app") {
-            if (data.applicationId != "-1" && data.applicationId != "(-1)" && data.operator != undefined) {
+            if (data.applicationId != "0" && data.applicationId != "(0)" && data.operator != undefined) {
                 providerConf.query += "applicationId:" + data.applicationId;
                 all = false;
             }
@@ -157,19 +157,19 @@
 
             providerConf.query = "responseTime:[" + data.dateStart + " TO " + data.dateEnd + "]";
 
-            if (data.operator != "-1" && data.operator != undefined) {
+            if (data.operator != "0" && data.operator != undefined) {
                 providerConf.query += " AND operatorId:'" + data.operator + "'";
             }
             log.info("data.operator => " + data.operator + "  => " + providerConf.query);
-            if (data.serviceProvider != "-1" && data.serviceProvider != undefined) {
+            if (data.serviceProvider != "0" && data.serviceProvider != undefined) {
                 providerConf.query += " AND serviceProviderId:'" + data.serviceProvider + "'";
             }
             log.info("data.serviceProvider => " + data.serviceProvider + "  => " + providerConf.query);
-            if (data.applicationName != "-1" && data.applicationName != undefined) {
+            if (data.applicationName != "0" && data.applicationName != undefined) {
                 providerConf.query += " AND applicationId:" + data.applicationName;
             }
             log.info("data.applicationName => " + data.applicationName + "  => " + providerConf.query);
-            if (data.api != "-1" && data.api != undefined) {
+            if (data.api != "0" && data.api != undefined) {
                 providerConf.query += " AND apiID:" + data.api;
             }
 
