@@ -15,7 +15,7 @@
  */
 var getConfig, validate, isProviderRequired, draw, update;
 
-(function () {
+(function() {
 
     var CHART_LOCATION = '/extensions/chart-templates/';
 
@@ -23,7 +23,7 @@ var getConfig, validate, isProviderRequired, draw, update;
      * return the config to be populated in the chart configuration UI
      * @param schema
      */
-    getConfig = function (schema) {
+    getConfig = function(schema) {
         var chartConf = require(CHART_LOCATION + '/line-chart/config.json').config;
         /*
          dynamic logic goes here
@@ -50,14 +50,14 @@ var getConfig, validate, isProviderRequired, draw, update;
      * validate the user inout for the chart configuration
      * @param chartConfig
      */
-    validate = function (chartConfig) {
+    validate = function(chartConfig) {
         return true;
     };
 
     /**
      * TO be used when provider configuration steps need to be skipped
      */
-    isProviderRequired = function () {
+    isProviderRequired = function() {
 
     }
 
@@ -68,7 +68,7 @@ var getConfig, validate, isProviderRequired, draw, update;
      * @param schema
      * @param data
      */
-    draw = function (placeholder, chartConfig, _schema, data) {
+    draw = function(placeholder, chartConfig, _schema, data) {
         _schema = updateUserPrefXYTypes(_schema, chartConfig);
         var schema = toVizGrammarSchema(_schema);
 
@@ -89,12 +89,12 @@ var getConfig, validate, isProviderRequired, draw, update;
             id: "chart-0",
             schema: schema,
             chartConfig: buildChartConfig(chartConfig),
-            data: function () {
+            data: function() {
                 if (lineChartGroupData) {
                     var result = [];
-                    lineChartGroupData.forEach(function (item) {
+                    lineChartGroupData.forEach(function(item) {
                         var row = [];
-                        schema[0].metadata.names.forEach(function (name) {
+                        schema[0].metadata.names.forEach(function(name) {
                             row.push(item[name]);
                         });
                         result.push(row);
@@ -108,14 +108,14 @@ var getConfig, validate, isProviderRequired, draw, update;
         var lineChartGroupData = [];
         var arcConfig = buildChart2Config(chartConfig);
 
-        data.forEach(function (row) {
+        data.forEach(function(row) {
             var notAvailable = true;
             var groupRow = JSON.parse(JSON.stringify(row));
 
             var notAvailableForLineChart = true;
             var lineCharGroupRow = JSON.parse(JSON.stringify(row));
 
-            groupData.forEach(function (row2) {
+            groupData.forEach(function(row2) {
                 if (groupRow[arcConfig.color] == row2[arcConfig.color]) {
                     notAvailable = false;
                     if (lineCharGroupRow['eventTimeStamp'] == row2['eventTimeStamp']) {
@@ -129,7 +129,7 @@ var getConfig, validate, isProviderRequired, draw, update;
 
                 groupRow[arcConfig.x] = 0;
 
-                data.forEach(function (row2) {
+                data.forEach(function(row2) {
                     if (groupRow[arcConfig.color] == row2[arcConfig.color]) {
                         groupRow[arcConfig.x] += row2[arcConfig.x];
                     }
@@ -140,7 +140,7 @@ var getConfig, validate, isProviderRequired, draw, update;
 
             if (notAvailableForLineChart) {
                 lineCharGroupRow[arcConfig.x] = 0;
-                data.forEach(function (row3) {
+                data.forEach(function(row3) {
                     if ((lineCharGroupRow[arcConfig.color] == row3[arcConfig.color]) && (lineCharGroupRow['eventTimeStamp'] == row3['eventTimeStamp'])) {
                         lineCharGroupRow[arcConfig.x] += row3[arcConfig.x];
                     }
@@ -153,12 +153,12 @@ var getConfig, validate, isProviderRequired, draw, update;
             id: "chart-1",
             schema: schema,
             chartConfig: arcConfig,
-            data: function () {
+            data: function() {
                 if (groupData) {
                     var result = [];
-                    groupData.forEach(function (item) {
+                    groupData.forEach(function(item) {
                         var row = [];
-                        schema[0].metadata.names.forEach(function (name) {
+                        schema[0].metadata.names.forEach(function(name) {
                             row.push(item[name]);
                         });
                         result.push(row);
@@ -183,7 +183,7 @@ var getConfig, validate, isProviderRequired, draw, update;
 
     };
 
-    compare = function (a, b) {
+    compare = function(a, b) {
         return a[9] - b[9];
 
     };
@@ -192,31 +192,32 @@ var getConfig, validate, isProviderRequired, draw, update;
      *
      * @param data
      */
-    update = function (data) {
+    update = function(data) {
         wso2gadgets.onDataReady(data, "append");
     };
 
-    buildChartConfig = function (_chartConfig) {
+    buildChartConfig = function(_chartConfig) {
         var conf = {};
         conf.x = "eventTimeStamp";
         conf.height = 400;
         conf.color = _chartConfig.color;
         conf.width = 600;
         conf.xType = _chartConfig.xType;
-        conf.padding = {"top": 5, "left": 70, "bottom": 40, "right": 20};
+        conf.padding = { "top": 5, "left": 70, "bottom": 40, "right": 20 };
         conf.yType = "linear";
         conf.maxLength = _chartConfig.maxLength;
         conf.charts = [];
         conf.charts[0] = {
             type: "line",
             y: _chartConfig.count,
-            legend: false
+            legend: false,
+            zero: true
         };
         return conf;
     };
 
 
-    buildChart2Config = function (_chartConfig) {
+    buildChart2Config = function(_chartConfig) {
         var conf = {};
         conf.x = _chartConfig.count;
         conf.color = _chartConfig.color;
@@ -224,7 +225,7 @@ var getConfig, validate, isProviderRequired, draw, update;
         conf.width = 450;
         conf.xType = _chartConfig.xType;
         conf.yType = _chartConfig.yType;
-        conf.padding = {"top": 0, "left": 0, "bottom": 40, "right": 50};
+        conf.padding = { "top": 0, "left": 0, "bottom": 40, "right": 50 };
         conf.maxLength = _chartConfig.maxLength;
         conf.charts = [];
         conf.charts[0] = {
