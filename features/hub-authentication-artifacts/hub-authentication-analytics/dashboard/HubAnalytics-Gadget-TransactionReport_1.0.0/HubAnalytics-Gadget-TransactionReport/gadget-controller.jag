@@ -34,28 +34,23 @@
     var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
     var userRealm = userRealmService.getTenantUserRealm(tenantId);
     var userStore = userRealm.getUserStoreManager();
-    var claim = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/department', null);
+    var department = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/department', null);
 
-    var department = "";
     var role = "";
     var serviceProvider = "";
 
     var log = new Log();
 
 
-    for (var i = 0; i < user.roles.length; i++) {
+    for (var i =0; i < user.roles.length; i++) {
         if (user.roles[i] == "admin" || user.roles[i] == "internal-gateway-admin") {
             role = "admin";
             break;
-        } else if (user.roles[i] == "business-unit-viewer") {
-            department = claim;
+        } else if(user.roles[i] == "business-unit-viewer"){
             role = "viewer";
-            break;
-        } else if (user.roles[i] == "business-unit-publisher") {
-            role = "publisher";
-        } else if (user.roles[i] == "Internal/subscriber") {
+        } else if(user.roles[i] == "Internal/subscriber" && role != "viewer"){
             role = "serviceProvider";
-            serviceProvider = user.username + "@" + user.domain;
+            serviceProvider = user.username+"@"+user.domain;
         }
     }
 
@@ -96,42 +91,31 @@
 
         var andSign = '';
         if((role != "admin" &&  all == false) || (providerConf[PROVIDER_NAME] == "batch")){
-            andSign =  ' AND ';
+         andSign =  ' AND ';
         }
-        log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch"));
-        if(role =="viewer" && providerConf[PROVIDER_NAME] == "operator"){
-
-            providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
-            providerConf.query +=  andSign +' department:"'+department+'"';
-            var viwerOperator = [];
-            log.info("providerConf operator => "+stringify(providerConf));
-            //        viwerOperator.push(providerAPI.getData(providerConf)[0]);
-            print(providerAPI.getData(providerConf));
-            return;
-        }else if(role =="viewer" && providerConf[PROVIDER_NAME] == "batch"){
-            providerConf.query +=  andSign +' department:"'+department+'"';
+        log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "sp" || providerConf[PROVIDER_NAME] == "batch"));
+        if(role =="viewer"){
+          providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+          providerConf.query +=  andSign +' department:"'+department+'"';
+          log.info(providerConf[PROVIDER_NAME] + "----------- data =>" + stringify(data));
+          log.info(providerConf[PROVIDER_NAME] + "----------- providerConf =>" + stringify(providerConf));
+          print(providerAPI.getData(providerConf));
+          return;
         }else if(role =="serviceProvider" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "sp")){
-            var serviceProviderName = user.username +"@"+ user.domain;
-            providerConf.query +=  andSign +' serviceProvider:"'+serviceProviderName+'"';
-            providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
-            var viwerSp= [];
-            log.info("providerConf serviceProvider => "+stringify(providerConf));
-            viwerSp.push(providerAPI.getData(providerConf)[0]);
-            print(viwerSp);
-            return;
-
+                  var serviceProviderName = user.username +"@"+ user.domain;
+                  providerConf.query +=  andSign +' serviceProvider:"'+serviceProviderName+'"';
+                  providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+                  print(providerAPI.getData(providerConf));
+                  return;
         }else if(role =="serviceProvider" && providerConf[PROVIDER_NAME] == "batch"){
-            var serviceProviderName = user.username +"@"+ user.domain;
-            providerConf.query +=  andSign +' serviceProvider:"'+serviceProviderName+'"';
+           var serviceProviderName = user.username +"@"+ user.domain;
+          providerConf.query +=  andSign +' serviceProvider:"'+serviceProviderName+'"';
         }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
-            providerConf.query +=  andSign +' serviceProvider:"'+serviceProvider+'"';
+          providerConf.query +=  andSign +' serviceProvider:"'+serviceProvider+'"';
         }
-        log.info("providerConf => "+stringify(providerConf));
-//        log.info("providerAPI.getData(providerConf)  => "+stringify(providerAPI.getData(providerConf)));
+
         print(providerAPI.getData(providerConf));
-
         return;
-
     } else if (user != null) {
 
         var userReportDirectory = "/reports/transactions/" + user.username + "/";
@@ -178,8 +162,7 @@
             } else if (role == "serviceProvider") {
                 providerConf.query += ' AND serviceProvider:"' + serviceProvider + '"';
             }
-            log.info(providerConf[PROVIDER_NAME] + "----------- data =>" + stringify(data));
-            log.info(providerConf[PROVIDER_NAME] + "----------- providerConf =>" + stringify(providerConf));
+
 
             var reportName = directory + user.username + "-transaction-report-" + new Date().getTime();
             service.generateCSVReport(tableName, providerConf.query, reportName, reportMaxLength);

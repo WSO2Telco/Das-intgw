@@ -259,6 +259,7 @@ $(function () {
                 var apps = [];
                 var loadedApps = [];
                 var appItems = '<li><a data-val="0" href="#">All</a></li>';
+                apps.push(applicationId);
                 for ( var i =0 ; i < data.length; i++) {
                     var app = data[i];
                     if($.inArray(app.applicationId, loadedApps)<0){
