@@ -173,7 +173,13 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
             var filter = {
                 "query": query,
                 "start": 0,
-                "count": limit
+                "count": limit,
+                "sortBy" : [
+                    {
+                        field : "responseTime",
+                        sortType : "DESC"
+                    }
+                ]
             };
             result = connector.search(loggedInUser, tableName, stringify(filter)).getMessage();
         } else {
