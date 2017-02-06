@@ -72,7 +72,7 @@ var getConfig, validate, isProviderRequired, draw, update;
         _schema = updateUserPrefXYTypes(_schema, chartConfig);
         var schema = toVizGrammarSchema(_schema);
         chartConfig.color = "api";
-        chartConfig.count = "totalResponseTimeCount";
+        chartConfig.count = "totalResponseCount";
 
         var view = {
             id: "chart-0",

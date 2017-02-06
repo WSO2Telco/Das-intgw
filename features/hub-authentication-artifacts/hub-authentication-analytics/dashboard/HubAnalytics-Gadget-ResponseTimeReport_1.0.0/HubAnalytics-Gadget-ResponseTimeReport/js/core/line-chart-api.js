@@ -73,7 +73,7 @@ var getConfig, validate, isProviderRequired, draw, update;
         _schema = updateUserPrefXYTypes(_schema, chartConfig);
         var schema = toVizGrammarSchema(_schema);
         chartConfig.color = "api";
-        chartConfig.count = "totalResponseTimeCount";
+        chartConfig.count = "totalResponseCount";
         var groupDta = [];
         groupDta = groupData(data);
 
@@ -119,11 +119,11 @@ var getConfig, validate, isProviderRequired, draw, update;
 
             if (notAvailable) {
 
-                groupRow['totalResponseTimeCount'] = 0;
+                groupRow['totalResponseCount'] = 0;
 
                 data.forEach(function(row2) {
                     if (groupRow['responseTimeRange'] == row2['responseTimeRange']) {
-                        groupRow['totalResponseTimeCount'] += row2['totalResponseTimeCount'];
+                        groupRow['totalResponseCount'] += row2['totalResponseCount'];
                     }
                 });
 
@@ -159,6 +159,8 @@ var getConfig, validate, isProviderRequired, draw, update;
             legend: false
         };
 
+        conf.tooltip= {"enabled":true, "color":"#e5f2ff", "type":"symbol",
+            "content":["responseTimeRange","totalResponseCount"], "label":true}
         return conf;
     };
 }());
