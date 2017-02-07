@@ -15,6 +15,8 @@ import org.wso2telco.analytics.hub.report.engine.internel.util.ReportEngineServi
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -111,6 +113,12 @@ class ReportEngineGenerator implements Runnable {
 
             records = AnalyticsDataServiceUtils
                     .listRecords(ReportEngineServiceHolder.getAnalyticsDataService(), resp);
+            Collections.sort(records, new Comparator<Record>(){
+                @Override
+                public int compare(Record o1, Record o2) {
+                    return Long.compare(o1.getTimestamp(), o2.getTimestamp());
+                }
+            });
         }
         try {
             CSVWriter.write(records, writeBufferLength, filePath);
