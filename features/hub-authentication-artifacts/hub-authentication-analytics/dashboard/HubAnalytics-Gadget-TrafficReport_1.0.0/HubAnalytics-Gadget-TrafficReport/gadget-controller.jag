@@ -65,7 +65,7 @@
         if (providerConf[PROVIDER_NAME] == "batch") {
                     var timeRangeUtil = Packages.org.wso2.analytics.shared.util.time.TimeRangeUtils;
                     var timeUnit = timeRangeUtil.getSuitableTimeRangeUnit(data.dateStart, data.dateEnd);
-                    timeUnit = ( timeUnit == 'MINUTE')?'HOUR':timeUnit;
+                    timeUnit = (( timeUnit == 'MINUTE') || ( timeUnit == 'SECOND'))?'HOUR':timeUnit;
                     var tableName = providerConf.tableName + timeUnit;
                     providerConf.query += "eventTimeStamp:["+data.dateStart+" TO "+data.dateEnd+"]";
                     if (data.operator != "0" && data.operator != undefined) {

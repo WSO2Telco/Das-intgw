@@ -136,7 +136,7 @@
                             </ul>
                         </div>
 
-                        <div class="col-xs-3">
+                        <div class="col-xs-3" hidden>
                             <span class="btn-label">MSISDN : </span>
                             <input type="text" class="form-control" id="txt-msisdn" disabled>
                         </div>
