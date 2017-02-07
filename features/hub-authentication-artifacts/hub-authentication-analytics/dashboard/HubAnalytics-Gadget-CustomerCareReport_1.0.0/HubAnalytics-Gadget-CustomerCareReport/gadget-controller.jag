@@ -99,7 +99,7 @@
          andSign =  ' AND ';
         }
         log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "sp" || providerConf[PROVIDER_NAME] == "batch"));
-        if(role =="viewer"){
+        if(role =="viewer" && providerConf[PROVIDER_NAME] != "batch"){
           providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
           providerConf.query +=  andSign +' department:"'+department+'"';
           print(providerAPI.getData(providerConf));
