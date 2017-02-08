@@ -72,18 +72,19 @@ var getConfig, validate, isProviderRequired, draw, update;
         _schema = updateUserPrefXYTypes(_schema, chartConfig);
         var schema = toVizGrammarSchema(_schema);
 
-       // var type = $("#button-type").val().toLowerCase().trim();
+        var type = $("#button-type").val().toLowerCase().trim();
 
-       // if (type == "api traffic") {
+        if (type == "api traffic") {
             chartConfig.color = "api";
             chartConfig.count = "totalCount";
         /* } else if (type == "operator traffic") {
             chartConfig.color = "operatorName";
             chartConfig.count = "totalCount";
+        */
         } else if (type == "error traffic") {
             chartConfig.color = "errorMessageId";
             chartConfig.count = "totalFailureCount";
-        }*/
+        }
 
         var view = {
             id: "chart-0",
