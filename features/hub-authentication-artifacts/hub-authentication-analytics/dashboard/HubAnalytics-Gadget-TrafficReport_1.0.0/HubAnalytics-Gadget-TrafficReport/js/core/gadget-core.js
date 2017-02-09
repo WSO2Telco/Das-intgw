@@ -174,7 +174,7 @@ $(function () {
                 for ( var i =0 ; i < data.length; i++) {
                     var sp = data[i];
                     if($.inArray(sp.serviceProviderId, loadedSps)<0){
-                    spItems += '<li><a data-val='+ sp.serviceProviderId +' href="#">' + sp.serviceProvider +'</a></li>'
+                    spItems += '<li><a data-val='+ sp.serviceProviderId +' href="#">' + sp.serviceProvider.replace("@carbon.super","") +'</a></li>'
                     spIds.push(" "+sp.serviceProviderId);
                     loadedSps.push(sp.serviceProviderId);
                   }
