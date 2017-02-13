@@ -308,6 +308,25 @@
                 <include>shindig.war</include>
             </includes>
         </fileSet>
+        <!-- replace wso2 logo with telco logo-->
+        <fileSet>
+            <directory>
+                customize/das-header-logo/
+            </directory>
+            <outputDirectory>
+                ${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/libs/theme-wso2_1.0/images/
+            </outputDirectory>
+        </fileSet>
+
+        <fileSet>
+            <directory>
+                customize/das-footer/
+            </directory>
+            <outputDirectory>
+                ${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/theme/templates/includes
+            </outputDirectory>
+        </fileSet>
+
 
         <!-- Dashboard portal Jaggery app. Should be copied to <DAS_HOME>/repository/deployment/server/jaggeryapps -->
         <!-- TODO remove exclusions after upgrading to carbon-dashboards 1.0.19 -->
@@ -703,6 +722,8 @@
             <!--filtered>true</filtered-->
             <fileMode>644</fileMode>
         </file>
+
+
 
         <file>
             <source>
@@ -1138,6 +1159,19 @@
             <outputDirectory>${pom.artifactId}-${pom.version}/repository/conf/datasources</outputDirectory>
         </file>
         <!--END Analytics JS APIs artifacts -->
+
+        <!--wso2 telco logo -->
+        <file>
+            <source>
+                customize/wso2telco_logo/logo.png
+            </source>
+            <outputDirectory>
+                ${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/theme/images/
+            </outputDirectory>
+        </file>
+
+
+
 
     </files>
 </assembly>
