@@ -162,7 +162,7 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
         var tableName = providerConfig.tableName;
         var query = providerConfig.query;
 
-        var limit = 100000;
+        var limit = 1000;
         if (providerConfig.limit) {
             limit = providerConfig.limit;
         }
