@@ -326,7 +326,15 @@
                 ${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/theme/templates/includes
             </outputDirectory>
         </fileSet>
-
+        <!-- replace dashboard.jag to remove pdf download option-->
+        <fileSet>
+            <directory>
+                customize/dashboard
+            </directory>
+            <outputDirectory>
+                ${pom.artifactId}-${pom.version}/repository/deployment/server/jaggeryapps/portal/theme/templates/
+            </outputDirectory>
+        </fileSet>
 
         <!-- Dashboard portal Jaggery app. Should be copied to <DAS_HOME>/repository/deployment/server/jaggeryapps -->
         <!-- TODO remove exclusions after upgrading to carbon-dashboards 1.0.19 -->
