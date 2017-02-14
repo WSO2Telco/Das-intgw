@@ -165,7 +165,8 @@
 
 
             var reportName = directory + user.username + "-transaction-report-" + new Date().getTime();
-            service.generateCSVReport(tableName, providerConf.query, reportName, reportMaxLength);
+            var reportType = "transaction";
+            service.generate(tableName, providerConf.query, reportName, reportMaxLength, reportType);
             print({'message': 'Report is generating'});
             return;
 

@@ -79,6 +79,10 @@ $(function () {
                 providerData = data;
             }
         });
+        if(providerData != '') {
+            $("#generateCSV").show();
+            $("#showCSV").show();
+        }
         return providerData;
     };
 
@@ -102,10 +106,81 @@ $(function () {
         });
     });
 
+    $("#button-generate-tr").click(function () {
+        getGadgetLocation(function (gadget_Location) {
+            gadgetLocation = gadget_Location;
+            conf.operator = operatorId;
+            conf.serviceProvider = serviceProviderId;
+            conf.api = apiId;
+            conf.applicationName = applicationId;
+
+            conf.dateStart = moment(moment($("#reportrange").text().split("-")[0]).format("MMMM D, YYYY hh:mm A")).valueOf();
+            conf.dateEnd = moment(moment($("#reportrange").text().split("-")[1]).format("MMMM D, YYYY hh:mm A")).valueOf();
+
+            if($("#button-type").val().toLowerCase().trim() == "error traffic") {
+                conf["provider-conf"].tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_FAILURE_SUMMARY_PER_";
+            } else {
+                conf["provider-conf"].tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_TRAFFIC_SUMMARY_PER_";
+            }
+
+            $.ajax({
+                url: gadgetLocation + '/gadget-controller.jag?action=generateCSV',
+                method: "POST",
+                data: JSON.stringify(conf),
+                contentType: "application/json",
+                async: false,
+                success: function (data) {
+                    $("#output").html('<div id="success-message" class="alert alert-success"><strong>Report is generating</strong> '
+                        + "Please refresh the traffic report"
+                        + '</div>' + $("#output").html());
+                    $('#success-message').fadeIn().delay(2000).fadeOut();
+                }
+            });
+
+
+        });
+    });
+
+
+    $("#button-list-tr").click(function () {
+        $("#showCSV").show();
+        $("#output").html("");
+        getGadgetLocation(function (gadget_Location) {
+            gadgetLocation = gadget_Location;
+            $.ajax({
+                url: gadgetLocation + '/gadget-controller.jag?action=available',
+                method: "POST",
+                data: JSON.stringify(conf),
+                contentType: "application/json",
+                async: false,
+                success: function (data) {
+                    $("#output").html("<ul class = 'list-group'>")
+                    for (var i = 0; i < data.length; i++) {
+                        $("#output").html($("#output").html() + "<li class = 'list-group-item'>"
+                            + " <span class='btn-label'>" + data[i].name + "</span>"
+                            + " <div class='btn-toolbar'>"
+                            + "<a class='btn btn-primary btn-xs' onclick='downloadFile(" + data[i].index + ")'>Download</a>"
+                            + "<a class='btn btn-default btn-xs' onclick='removeFile(" + data[i].index + ")'>Remove</a>"
+                            + "</div>"
+                            + "</li>");
+                    }
+                    $("#output").html($("#output").html() + "<ul/>")
+
+                }
+            });
+
+
+        });
+    });
+
+
     getGadgetLocation(function (gadget_Location) {
         gadgetLocation = gadget_Location;
         init();
         loadOperator();
+        $("#generateCSV").hide();
+        //$("#showCSV").hide();
+
         // loadSP();
         // loadApp();
         // loadApi();
@@ -313,7 +388,29 @@ $(function () {
         $("#button-type").val($(this).text());
     });
 
-
-
-
 });
+
+function removeFile(index) {
+    getGadgetLocation(function (gadget_Location) {
+        gadgetLocation = gadget_Location;
+        $.ajax({
+            url: gadgetLocation + '/gadget-controller.jag?action=remove&index=' + index,
+            method: "POST",
+            contentType: "application/json",
+            async: false,
+            success: function (data) {
+                $("#button-list-tr").click();
+            }
+        });
+    });
+}
+
+
+function downloadFile(index) {
+    getGadgetLocation(function (gadget_Location) {
+        gadgetLocation = gadget_Location;
+
+        location.href = gadgetLocation + '/gadget-controller.jag?action=get&index=' + index;
+
+    });
+}
