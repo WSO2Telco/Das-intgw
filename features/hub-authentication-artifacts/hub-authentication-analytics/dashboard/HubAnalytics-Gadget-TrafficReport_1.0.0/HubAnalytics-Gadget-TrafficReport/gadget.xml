@@ -181,12 +181,8 @@
                          <div class="row" id="generateCSV">
                               <div class="col-xs-3">
                               <label for="button-generate-tr">  </label>
-                                <button type="button" id="button-generate-tr"  class="btn btn-primary">Generate</button>
+                                <button type="button" id="button-generate-tr"  class="btn btn-primary">Generate csv</button>
                               </div>
-                            <div class="col-xs-3">
-                              <label for="button-load">  </label>
-                                <button type="button" id="button-list-tr"  class="btn btn-default">List available reports</button>
-                            </div>
                          </div>
                          <br/>
                        <div class="row" id="showCSV">

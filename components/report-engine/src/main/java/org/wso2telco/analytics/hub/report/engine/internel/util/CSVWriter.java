@@ -62,7 +62,9 @@ public class CSVWriter {
                 Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
                 sb.append(format.format(date));
                 sb.append(',');
-                sb.append(record.getValues().get("serviceProvider"));
+                String spValue = (String) record.getValues().get("serviceProvider");
+                sb.append(spValue.replace("@carbon.super",""));
+
                 sb.append(',');
                 sb.append(record.getValues().get("applicationName"));
                 sb.append(',');

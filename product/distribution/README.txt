@@ -1,11 +1,12 @@
 WSO2Telco DEP(Digital Enablement Platform) Gateway Analytics, v2.0.0
 ====================================================================
 
-@buildNumber@
+13 Feb 2017
 
 Welcome to the WSO2Telco DEP Gateway Analytics, v2.0.0 release.
 
-Gateway Analytics for DEP, is a Data Analytics extension for DEP. This extension will introduce data analytical capabilities to DEP.    
+Gateway Analytics for DEP, is a Data Analytics extension introducing data analytical capabilities to DEP.    
+
 
 Key Features
 ============
@@ -18,17 +19,22 @@ Key Features
 
 	- Response Time - Provides API wise response time.
 
-	- Failure report - Provides Percentage of predefined errors occured in the system.
-
 
 Installation & Running
 ======================
-1. Extract the downloaded zip file
-2. Run the wso2server.sh or wso2server.bat file in the bin directory
-3. Once the server starts, point your Web browser to
-   https://localhost:9443/carbon/
 
-For more details, see the Installation Guide
+1. Extract the downloaded zip file
+2. Copy the following data sources of HUB to <Analytics_Home>/repositroy/conf/datasources/master-datasources.xml
+         WSO2AM_STATS_DB 
+         WSO2UM_DB 
+3. Change the  'dataSource' property of <Analytics_Home>/repositroy/conf/user-mgt.xml to jdbc/WSO2UM_DB
+4. Run the wso2server.sh or wso2server.bat file in the bin directory
+5. Once the server starts, point your Web browser to
+   https://localhost:9444/carbon/ 
+   (Note that the default port offset of the server is 1)
+6. Follow the instructions under the section 'To install and configure the Hub to publish data on Analytics' under http://docs.wso2telco.com/display/MI/Analytics
+7. For user and role related configurations follow the guide http://docs.wso2telco.com/display/MI/Analytics+View+Permission
+
 
 System Requirements
 ===================

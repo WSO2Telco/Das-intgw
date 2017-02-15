@@ -34,7 +34,7 @@ public class CarbonReportEngineService implements ReportEngineService {
                 new LinkedBlockingQueue<Runnable>(ReportEngineServiceConstants.SERVICE_EXECUTOR_JOB_QUEUE_SIZE));
     }
 
-    public void generate(String tableName, String query, String reportName, int maxLength, String reportType) {
+    public void generateCSVReport(String tableName, String query, String reportName, int maxLength, String reportType) {
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId(true);
 
         threadPoolExecutor.submit(new ReportEngineGenerator(tableName,query, maxLength, reportName, tenantId, reportType));

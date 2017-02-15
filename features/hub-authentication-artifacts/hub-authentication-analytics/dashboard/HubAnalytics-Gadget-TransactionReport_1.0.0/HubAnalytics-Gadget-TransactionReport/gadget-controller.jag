@@ -22,6 +22,8 @@
     response.contentType = 'application/json';
     var PROVIDER_CONF = 'provider-conf';
     var PROVIDER_NAME = 'provider-name';
+    var FILE_NAME = '-transaction-report-';
+
 
     var action = request.getParameter("action");
     var data = request.getContent();
@@ -41,16 +43,15 @@
 
     var log = new Log();
 
-
-    for (var i =0; i < user.roles.length; i++) {
+    for (var i = 0; i < user.roles.length; i++) {
         if (user.roles[i] == "admin" || user.roles[i] == "internal-gateway-admin") {
             role = "admin";
             break;
-        } else if(user.roles[i] == "business-unit-viewer"){
+        } else if (user.roles[i] == "business-unit-viewer") {
             role = "viewer";
-        } else if(user.roles[i] == "Internal/subscriber" && role != "viewer"){
+        } else if (user.roles[i] == "Internal/subscriber" && role != "viewer") {
             role = "serviceProvider";
-            serviceProvider = user.username+"@"+user.domain;
+            serviceProvider = user.username + "@" + user.domain;
         }
     }
 
@@ -90,28 +91,28 @@
         }
 
         var andSign = '';
-        if((role != "admin" &&  all == false) || (providerConf[PROVIDER_NAME] == "batch")){
-         andSign =  ' AND ';
+        if ((role != "admin" && all == false) || (providerConf[PROVIDER_NAME] == "batch")) {
+            andSign = ' AND ';
         }
-        log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "sp" || providerConf[PROVIDER_NAME] == "batch"));
-        if(role =="viewer"){
-          providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
-          providerConf.query +=  andSign +' department:"'+department+'"';
-          log.info(providerConf[PROVIDER_NAME] + "----------- data =>" + stringify(data));
-          log.info(providerConf[PROVIDER_NAME] + "----------- providerConf =>" + stringify(providerConf));
-          print(providerAPI.getData(providerConf));
-          return;
-        }else if(role =="serviceProvider" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "sp")){
-                  var serviceProviderName = user.username +"@"+ user.domain;
-                  providerConf.query +=  andSign +' _serviceProvider:"'+serviceProviderName+'"';
-                  providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
-                  print(providerAPI.getData(providerConf));
-                  return;
-        }else if(role =="serviceProvider" && providerConf[PROVIDER_NAME] == "batch"){
-           var serviceProviderName = user.username +"@"+ user.domain;
-          providerConf.query +=  andSign +' _serviceProvider:"'+serviceProviderName+'"';
-        }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
-          providerConf.query +=  andSign +' _serviceProvider:"'+serviceProvider+'"';
+        log.info("role => " + role + "    providerConf[PROVIDER_NAME] =>" + providerConf[PROVIDER_NAME] + "  " + (providerConf[PROVIDER_NAME] == "sp" || providerConf[PROVIDER_NAME] == "batch"));
+        if (role == "viewer") {
+            providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+            providerConf.query += andSign + ' department:"' + department + '"';
+            //     log.info(providerConf[PROVIDER_NAME] + "----------- data =>" + stringify(data));
+            //   log.info(providerConf[PROVIDER_NAME] + "----------- providerConf =>" + stringify(providerConf));
+            print(providerAPI.getData(providerConf));
+            return;
+        } else if (role == "serviceProvider" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "sp")) {
+            var serviceProviderName = user.username + "@" + user.domain;
+            providerConf.query += andSign + ' _serviceProvider:"' + serviceProviderName + '"';
+            providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+            print(providerAPI.getData(providerConf));
+            return;
+        } else if (role == "serviceProvider" && providerConf[PROVIDER_NAME] == "batch") {
+            var serviceProviderName = user.username + "@" + user.domain;
+            providerConf.query += andSign + ' _serviceProvider:"' + serviceProviderName + '"';
+        } else if (role == "publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")) {
+            providerConf.query += andSign + ' _serviceProvider:"' + serviceProvider + '"';
         }
 
         print(providerAPI.getData(providerConf));
@@ -121,18 +122,20 @@
         var userReportDirectory = "/reports/transactions/" + user.username + "/";
         var directory = "repository/deployment/server/jaggeryapps/portal/" + userReportDirectory;
 
-        if(role == ""){
+        if (role == "") {
             print({'message': 'Not Allowed!'});
             return;
         }
-
+        var reportPrefix = user.username + FILE_NAME;
         if (action == "generate") {
 
+
+            removeAllFiles(userReportDirectory, reportPrefix);
             var carbon = require('carbon');
             var service = service = carbon.server.osgiService('org.wso2telco.analytics.hub.report.engine.ReportEngineService');
 
             var tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS";
-            var reportMaxLength = 10;
+            var reportMaxLength = 1000000;
 
 
             var providerConf = data[PROVIDER_CONF];
@@ -144,15 +147,15 @@
             if (data.operator != "0" && data.operator != undefined) {
                 providerConf.query += " AND operatorId:'" + data.operator + "'";
             }
-            log.info("data.operator => " + data.operator + "  => " + providerConf.query);
+            //      log.info("data.operator => " + data.operator + "  => " + providerConf.query);
             if (data.serviceProvider != "0" && data.serviceProvider != undefined) {
                 providerConf.query += " AND serviceProviderId:'" + data.serviceProvider + "'";
             }
-            log.info("data.serviceProvider => " + data.serviceProvider + "  => " + providerConf.query);
+            //    log.info("data.serviceProvider => " + data.serviceProvider + "  => " + providerConf.query);
             if (data.applicationName != "0" && data.applicationName != undefined) {
                 providerConf.query += " AND applicationId:" + data.applicationName;
             }
-            log.info("data.applicationName => " + data.applicationName + "  => " + providerConf.query);
+            //  log.info("data.applicationName => " + data.applicationName + "  => " + providerConf.query);
             if (data.api != "0" && data.api != undefined) {
                 providerConf.query += " AND apiID:" + data.api;
             }
@@ -163,10 +166,10 @@
                 providerConf.query += ' AND serviceProvider:"' + serviceProvider + '"';
             }
 
-
-            var reportName = directory + user.username + "-transaction-report-" + new Date().getTime();
             var reportType = "transaction";
-            service.generate(tableName, providerConf.query, reportName, reportMaxLength, reportType);
+            var reportName = directory + reportPrefix + new Date().getTime();
+            service.generateCSVReport(tableName, providerConf.query, reportName, reportMaxLength, reportType);
+
             print({'message': 'Report is generating'});
             return;
 
@@ -176,7 +179,7 @@
 
             var files = [];
             for (var i = 0; i < file.listFiles().length; i++) {
-                if (!file.listFiles()[i].getName().search(user.username+ "-transaction-report-")) {
+                if (!file.listFiles()[i].getName().search(reportPrefix)) {
                     files[i] = {"name": file.listFiles()[i].getName(), "index": i};
                 }
             }
@@ -196,8 +199,22 @@
             return;
         }
     }
-
 }());
+
+
+function removeAllFiles(userReportDirectory, reportPrefix1) {
+    var file = new File(userReportDirectory);
+
+    for (var i = 0; i < file.listFiles().length; i++) {
+        if (!file.listFiles()[i].getName().search(reportPrefix1)) {
+            log.info("File " + file.listFiles()[i].getName() + " deleted.");
+            var result = file.listFiles()[i].del();
+//log.info(result);
+
+        }
+    }
+};
+
 
 
 %>

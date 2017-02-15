@@ -137,49 +137,42 @@ $(function () {
                 }
             });
 
+            $("#showCSV").show();
+            $("#output").html("");
+            getGadgetLocation(function (gadget_Location) {
+                gadgetLocation = gadget_Location;
+                $.ajax({
+                    url: gadgetLocation + '/gadget-controller.jag?action=available',
+                    method: "POST",
+                    data: JSON.stringify(conf),
+                    contentType: "application/json",
+                    async: false,
+                    success: function (data) {
+                        $("#output").html("<ul class = 'list-group'>")
+                        for (var i = 0; i < data.length; i++) {
+                            $("#output").html($("#output").html() + "<li class = 'list-group-item'>"
+                                + " <span class='btn-label'>" + data[i].name + "</span>"
+                                + " <div class='btn-toolbar'>"
+                                + "<a class='btn btn-primary btn-xs' onclick='downloadFile(" + data[i].index + ")'>Download</a>"
+                                + "</div>"
+                                + "</li>");
+                        }
+                        $("#output").html($("#output").html() + "<ul/>")
 
-        });
-    });
-
-
-    $("#button-list-tr").click(function () {
-        $("#showCSV").show();
-        $("#output").html("");
-        getGadgetLocation(function (gadget_Location) {
-            gadgetLocation = gadget_Location;
-            $.ajax({
-                url: gadgetLocation + '/gadget-controller.jag?action=available',
-                method: "POST",
-                data: JSON.stringify(conf),
-                contentType: "application/json",
-                async: false,
-                success: function (data) {
-                    $("#output").html("<ul class = 'list-group'>")
-                    for (var i = 0; i < data.length; i++) {
-                        $("#output").html($("#output").html() + "<li class = 'list-group-item'>"
-                            + " <span class='btn-label'>" + data[i].name + "</span>"
-                            + " <div class='btn-toolbar'>"
-                            + "<a class='btn btn-primary btn-xs' onclick='downloadFile(" + data[i].index + ")'>Download</a>"
-                            + "<a class='btn btn-default btn-xs' onclick='removeFile(" + data[i].index + ")'>Remove</a>"
-                            + "</div>"
-                            + "</li>");
                     }
-                    $("#output").html($("#output").html() + "<ul/>")
+                });
 
-                }
             });
 
-
         });
     });
-
 
     getGadgetLocation(function (gadget_Location) {
         gadgetLocation = gadget_Location;
         init();
         loadOperator();
         $("#generateCSV").hide();
-        //$("#showCSV").hide();
+        $("#showCSV").hide();
 
         // loadSP();
         // loadApp();
@@ -249,7 +242,7 @@ $(function () {
                 for ( var i =0 ; i < data.length; i++) {
                     var sp = data[i];
                     if($.inArray(sp.serviceProviderId, loadedSps)<0){
-                    spItems += '<li><a data-val='+ sp.serviceProviderId +' href="#">' + sp.serviceProvider +'</a></li>'
+                    spItems += '<li><a data-val='+ sp.serviceProviderId +' href="#">' + sp.serviceProvider.replace("@carbon.super","") +'</a></li>'
                     spIds.push(" "+sp.serviceProviderId);
                     loadedSps.push(sp.serviceProviderId);
                   }
@@ -389,21 +382,6 @@ $(function () {
     });
 
 });
-
-function removeFile(index) {
-    getGadgetLocation(function (gadget_Location) {
-        gadgetLocation = gadget_Location;
-        $.ajax({
-            url: gadgetLocation + '/gadget-controller.jag?action=remove&index=' + index,
-            method: "POST",
-            contentType: "application/json",
-            async: false,
-            success: function (data) {
-                $("#button-list-tr").click();
-            }
-        });
-    });
-}
 
 
 function downloadFile(index) {
