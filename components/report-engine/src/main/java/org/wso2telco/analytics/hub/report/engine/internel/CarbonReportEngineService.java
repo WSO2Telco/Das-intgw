@@ -34,10 +34,10 @@ public class CarbonReportEngineService implements ReportEngineService {
                 new LinkedBlockingQueue<Runnable>(ReportEngineServiceConstants.SERVICE_EXECUTOR_JOB_QUEUE_SIZE));
     }
 
-    public void generateCSVReport(String tableName, String query, String reportName, int maxLength) {
+    public void generateCSVReport(String tableName, String query, String reportName, int maxLength, String reportType) {
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId(true);
 
-        threadPoolExecutor.submit(new ReportEngineGenerator(tableName,query, maxLength, reportName, tenantId));
+        threadPoolExecutor.submit(new ReportEngineGenerator(tableName,query, maxLength, reportName, tenantId, reportType));
     }
 }
 
@@ -56,12 +56,15 @@ class ReportEngineGenerator implements Runnable {
 
     private int tenantId;
 
-    public ReportEngineGenerator(String tableName, String query, int maxLength, String reportName, int tenantId) {
+    private String reportType;
+
+    public ReportEngineGenerator(String tableName, String query, int maxLength, String reportName, int tenantId, String reportType) {
         this.tableName = tableName;
         this.query = query;
         this.maxLength = maxLength;
         this.reportName = reportName;
         this.tenantId = tenantId;
+        this.reportType = reportType;
     }
 
     @Override
@@ -74,18 +77,24 @@ class ReportEngineGenerator implements Runnable {
 
             int writeBufferLength = 8192;
 
-            //Check weather search count is greater than the max file length and split files accordingly
-            if (searchCount > maxLength) {
-                for (int i = 0; i < searchCount; ) {
-                    int end = i + maxLength;
-                    String filepath = reportName +"-"+i+"-"+end+".csv";
-                    generateCSV(tableName, query, filepath, tenantId, i, maxLength, writeBufferLength);
-                    i = end;
+            if(reportType.equalsIgnoreCase("transaction")) {
+                //Check weather search count is greater than the max file length and split files accordingly
+                if (searchCount > maxLength) {
+                    for (int i = 0; i < searchCount; ) {
+                        int end = i + maxLength;
+                        String filepath = reportName + "-" + i + "-" + end + ".csv";
+                        generate(tableName, query, filepath, tenantId, i, maxLength, writeBufferLength);
+                        i = end;
+                    }
+                } else {
+                    String filepath = reportName + ".csv";
+                    generate(tableName, query, filepath, tenantId, 0, searchCount, writeBufferLength);
                 }
-            } else {
-                String filepath = reportName + ".csv";
-                generateCSV(tableName, query, filepath, tenantId, 0, searchCount, writeBufferLength);
+            } else if(reportType.equalsIgnoreCase("traffic")) {
+                String filepath = reportName +  ".csv";
+                generate(tableName, query, filepath, tenantId, 0, searchCount, writeBufferLength);
             }
+
 
 
         } catch (AnalyticsException e) {
@@ -93,7 +102,7 @@ class ReportEngineGenerator implements Runnable {
         }
     }
 
-    public void generateCSV(String tableName, String query, String filePath, int tenantId, int start,
+    public void generate(String tableName, String query, String filePath, int tenantId, int start,
                             int maxLength, int writeBufferLength)
             throws AnalyticsException{
 
@@ -121,7 +130,11 @@ class ReportEngineGenerator implements Runnable {
             });
         }
         try {
-            CSVWriter.write(records, writeBufferLength, filePath);
+            if (reportType.equalsIgnoreCase("traffic")) {
+                CSVWriter.writeTrafficCSV(records, writeBufferLength, filePath);
+            } else if (reportType.equalsIgnoreCase("transaction")) {
+                CSVWriter.writeTransactionCSV(records, writeBufferLength, filePath);
+            }
         } catch (IOException e) {
             log.error("CSV file " + filePath + " cannot be created", e);
         }
