@@ -141,7 +141,7 @@
     }
     else if (user != null) {
 
-            var userReportDirectory = "/reports/traffic/" + user.username + "/";
+            var userReportDirectory = "/reports/traffic/";
             var directory = "repository/deployment/server/jaggeryapps/portal" + userReportDirectory;
             var reportPrefix = user.username + FILE_NAME;
 
