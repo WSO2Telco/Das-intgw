@@ -119,7 +119,20 @@
         }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
           providerConf.query +=  andSign +' _serviceProvider:"'+serviceProvider+'"';
         }
-        print(providerAPI.getData(providerConf));
+
+        var displayStart = data.displayStart;
+        var displayLength = data.displayLength;
+        var records = data.records;
+        var isTableUpdate = data.isTableUpdate;
+
+        if(isTableUpdate) {
+            var requestStart = records;
+            log.info(stringify(providerAPI.getData(providerConf, requestStart, displayLength)));
+            print(providerAPI.getData(providerConf, requestStart, displayLength));
+        }
+        else{
+            print(providerAPI.getData(providerConf, 0, 10));
+        }
 
         return;
 

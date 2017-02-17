@@ -158,11 +158,11 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
      * @param providerConfig
      * @param limit
      */
-    getData = function(providerConfig, limit) {
+    getData = function(providerConfig, start, limit) {
         var tableName = providerConfig.tableName;
         var query = providerConfig.query;
 
-        var limit = 1000;
+        // var limit = 1000;
         if (providerConfig.limit) {
             limit = providerConfig.limit;
         }
@@ -171,7 +171,7 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
         if (query) {
             var filter = {
                 "query": query,
-                "start": 0,
+                "start": start,
                 "count": limit,
                 "sortBy" : [
                     {
