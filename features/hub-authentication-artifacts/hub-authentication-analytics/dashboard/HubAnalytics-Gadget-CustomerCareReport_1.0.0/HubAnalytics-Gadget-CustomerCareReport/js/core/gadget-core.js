@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+var getProviderData, conf, schema;
+
 $(function () {
     var gadgetLocation;
-    var conf;
-    var schema;
     var pref = new gadgets.Prefs();
 
     var refreshInterval;
@@ -56,7 +57,13 @@ $(function () {
         });
     };
 
-    var getProviderData = function (){
+    getProviderData = function (displayStart, displayLength, records, isTableUpdate){
+        conf["isTableUpdate"] = isTableUpdate;
+        if(isTableUpdate) {
+            conf["displayStart"] = displayStart;
+            conf["displayLength"] = displayLength;
+            conf["records"] = records;
+        }
 
         $.ajax({
             url: gadgetLocation + '/gadget-controller.jag?action=getData',
@@ -87,7 +94,7 @@ $(function () {
         getGadgetLocation(function (gadget_Location) {
             gadgetLocation = gadget_Location;
             init();
-            getProviderData();
+            getProviderData(0, 0, 0, false);
             drawGadget();
         });
     });
