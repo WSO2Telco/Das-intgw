@@ -59,6 +59,7 @@ $(function () {
 
     getProviderData = function (displayStart, displayLength, records, isTableUpdate){
         conf["isTableUpdate"] = isTableUpdate;
+        var tableInfo;
         if(isTableUpdate) {
             conf["displayStart"] = displayStart;
             conf["displayLength"] = displayLength;
@@ -72,9 +73,12 @@ $(function () {
             contentType: "application/json",
             async: false,
             success: function (data) {
-                providerData = data;
+                var tableData = data["tableData"];
+                providerData = tableData;
+                tableInfo = data["tableInfo"];
             }
         });
+        setTableInfo(tableInfo);
         return providerData;
     };
 

@@ -176,7 +176,7 @@ var getConfig, validate, getMode, getSchema, getData, registerCallBackforPush;
                 "sortBy" : [
                     {
                         field : "responseTime",
-                        sortType : "DESC",
+                        sortType : "DESC"
                     }
                 ]
             };
