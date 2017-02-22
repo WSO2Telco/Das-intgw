@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var getConfig, validate, isProviderRequired, draw, update;
+var getConfig, validate, isProviderRequired, draw, update, setTableInfo;
 
 (function() {
 
     var CHART_LOCATION = '/extensions/chart-templates/';
+    var tableLength;
 
     /**
      * return the config to be populated in the chart configuration UI
@@ -149,7 +150,10 @@ var getConfig, validate, isProviderRequired, draw, update;
                         '<"dataTablesBottom"' +
                         'lip' +
                         '>',
-                        "info":true
+                        "info":true,
+                        "fnInfoCallback": function (oSettings, iStart, iEnd, iMax, iTotal, sPre) {
+                            return "Showing " + iStart + " to " + iEnd + " of " + tableLength + " entries.";
+                        }
                     });
                     $('#table').on('page.dt', function (e, settings) {
                         update(settings);
@@ -163,17 +167,23 @@ var getConfig, validate, isProviderRequired, draw, update;
 
     };
 
-    update = function(data) {
+
+    setTableInfo = function (tableInfo) {
+        if (tableInfo)
+            tableLength = tableInfo;
+    };
+
+    update = function (data) {
         var displayStart = data._iDisplayStart;
         var displayLength = data._iDisplayLength;
         var records = data.aiDisplay.length;
-        if(displayStart != 0) {
+        if (displayStart != 0) {
             var data = getProviderData(displayStart, displayLength, records, true);
-            for(var i = 0; i < data.length; i++ ) {
+            for (var i = 0; i < data.length; i++) {
                 no = no + 1;
                 data[i].no = no;
                 try {
-                    var json =  data[i].jsonBody.replace(/\\n/g, "")
+                    var json = data[i].jsonBody.replace(/\\n/g, "")
                         .replace(/\\'/g, "\\'")
                         .replace(/\\"/g, '\\"')
                         .replace(/\\&/g, "\\&")
@@ -191,7 +201,7 @@ var getConfig, validate, isProviderRequired, draw, update;
             }
 
             var recordsArray = [];
-            for(var j = 0; j < data.length; j++) {
+            for (var j = 0; j < data.length; j++) {
                 var temp = [];
                 temp.push(data[j].no);
                 temp.push(data[j].responseTime);

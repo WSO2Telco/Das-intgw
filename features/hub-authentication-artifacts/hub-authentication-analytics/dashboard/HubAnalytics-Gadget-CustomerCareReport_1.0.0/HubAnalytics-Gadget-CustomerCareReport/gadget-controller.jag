@@ -124,18 +124,25 @@
         var displayLength = data.displayLength;
         var records = data.records;
         var isTableUpdate = data.isTableUpdate;
+        var tempResult = {};
 
         if(isTableUpdate) {
-            var requestStart = records;
-            log.info(stringify(providerAPI.getData(providerConf, requestStart, displayLength)));
-            print(providerAPI.getData(providerConf, requestStart, displayLength));
+            var result = providerAPI.getData(providerConf, records, displayLength);
+            tempResult["tableData"] = result;
+            print(tempResult);
         }
         else{
-            print(providerAPI.getData(providerConf, 0, 10));
+            var result = providerAPI.getData(providerConf, 0, 10);
+            var tableLength = getTableInfo(providerAPI);
+            tempResult["tableData"] = result;
+            tempResult["tableInfo"] = tableLength;
+            print(tempResult);
         }
+    }
 
-        return;
-
+    function getTableInfo() {
+        var a = providerAPI.getData(providerConf, 0, 10000000);
+        return a.length;
     }
 
 }());
