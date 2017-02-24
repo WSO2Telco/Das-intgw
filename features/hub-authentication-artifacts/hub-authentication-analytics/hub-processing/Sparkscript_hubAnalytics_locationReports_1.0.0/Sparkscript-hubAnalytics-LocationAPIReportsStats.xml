@@ -1,0 +1,83 @@
+CREATE TEMPORARY TABLE ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_LOCATION_PROCESSEDSTATISTICS
+      USING CarbonAnalytics
+      OPTIONS(tableName "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_LOCATION_PROCESSEDSTATISTICS");
+
+
+CREATE TEMPORARY TABLE LocationHourlyTransactionLogSummary using CarbonAnalytics options (tableName "org_wso2telco_analytics_hub_stream_location_trasactionLog_summary_per_hour",
+    schema "
+    year INT -i, 
+    month INT -i, 
+    day INT -i, 
+    hour INT -i,
+    eventTimeStamp STRING -i,
+    api STRING -i,
+    serviceProvider STRING -i,
+    apiPublisher STRING -i,
+    applicationName STRING -i,
+    operatorId STRING -i,
+    msisdn STRING -i,
+    direction STRING -i,
+    responseCode STRING -i,
+    eventType STRING -i,
+    locationRetrievalStatus STRING -i,
+    totalCount INTEGER -i",
+    
+    primaryKeys "year,month,day,hour,eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,msisdn,direction,responseCode,locationRetrievalStatus,eventType"
+    );
+
+CREATE TEMPORARY TABLE LocationDailyTransactionLogSummary using CarbonAnalytics options (tableName "org_wso2telco_analytics_hub_stream_location_trasactionLog_summary_per_day",
+    schema "
+    year INT -i, 
+    month INT -i, 
+    day INT -i, 
+    eventTimeStamp STRING -i,
+    api STRING -i,
+    serviceProvider STRING -i,
+    apiPublisher STRING -i,
+    applicationName STRING -i,
+    operatorId STRING -i,
+    msisdn STRING -i,
+    direction STRING -i,
+    responseCode STRING -i,
+    eventType STRING -i,
+    locationRetrievalStatus STRING -i,
+    totalCount INTEGER -i",
+    primaryKeys "year,month,day,eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,msisdn,direction,responseCode,locationRetrievalStatus,eventType"
+    );
+
+CREATE TEMPORARY TABLE LocationMonthlyTransactionLogSummary using CarbonAnalytics options (tableName "org_wso2telco_analytics_hub_stream_location_trasactionLog_summary_per_month",
+    schema "
+    year INT -i, 
+    month INT -i, 
+    eventTimeStamp STRING -i,
+    api STRING -i,
+    serviceProvider STRING -i,
+    apiPublisher STRING -i,
+    applicationName STRING -i,
+    operatorId STRING -i,
+    msisdn STRING -i,
+    direction STRING -i,
+    responseCode STRING -i,
+    eventType STRING -i,
+    locationRetrievalStatus STRING -i,
+    totalCount INTEGER -i",
+    primaryKeys "year,month,eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,msisdn,direction,responseCode,locationRetrievalStatus,eventType"
+    );
+
+CREATE TEMPORARY TABLE LocationYearlyTransactionLogSummary using CarbonAnalytics options (tableName "org_wso2telco_analytics_hub_stream_location_trasactionLog_summary_per_year",
+    schema "
+    year INT -i, 
+    eventTimeStamp STRING -i,
+    api STRING -i,
+    serviceProvider STRING -i,
+    apiPublisher STRING -i,
+    applicationName STRING -i,
+    operatorId STRING -i,
+    msisdn STRING -i,
+    direction STRING -i,
+    responseCode STRING -i,
+    eventType STRING -i,
+    locationRetrievalStatus STRING -i,
+    totalCount INTEGER -i",
+    primaryKeys "year,eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,msisdn,direction,responseCode,locationRetrievalStatus,eventType"
+    );
