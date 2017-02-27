@@ -123,14 +123,15 @@ $(function () {
                     contentType: "application/json",
                     async: false,
                     success: function (data) {
+                        var tableData = data["tableData"];
                         $("#dropdown-operator").empty();
                         var operatorsItems = "";
                         var operatorIds = [];
                         var loadedOperator = [];
                         operatorIds.push(operatorId);
                         operatorsItems += '<li><a data-val="0" href="#">All</a></li>';
-                        for (var i =0 ; i < data.length; i++) {
-                            var operator = data[i];
+                        for (var i =0 ; i < tableData.length; i++) {
+                            var operator = tableData[i];
                             if($.inArray(operator.operatorId, loadedOperator)<0){
                             operatorsItems += '<li><a data-val='+ operator.operatorId +' href="#">' + operator.operatorName +'</a></li>';
                             operatorIds.push(" "+operator.operatorId);
@@ -166,14 +167,15 @@ $(function () {
             contentType: "application/json",
             async: false,
             success: function (data) {
+                var tableData = data["tableData"];
                 $("#dropdown-sp").empty();
                 var spItems = '';
                 var spIds = [];
                 var loadedSps = [];
                 spIds.push(serviceProviderId);
                 spItems += '<li><a data-val="0" href="#">All</a></li>';
-                for ( var i =0 ; i < data.length; i++) {
-                    var sp = data[i];
+                for ( var i =0 ; i < tableData.length; i++) {
+                    var sp = tableData[i];
                     if($.inArray(sp.serviceProviderId, loadedSps)<0){
                     spItems += '<li><a data-val='+ sp.serviceProviderId +' href="#">' + sp.serviceProvider.replace("@carbon.super","") +'</a></li>'
                     spIds.push(" "+sp.serviceProviderId);
@@ -217,13 +219,13 @@ $(function () {
         contentType: "application/json",
         async: false,
         success: function (data) {
-
+            var tableData = data["tableData"];
             $("#dropdown-app").empty();
             var apps = [];
             var loadedApps = [];
             var appItems = '<li><a data-val="0" href="#">All</a></li>';
-            for ( var i =0 ; i < data.length; i++) {
-                var app = data[i];
+            for ( var i =0 ; i < tableData.length; i++) {
+                var app = tableData[i];
                 if($.inArray(app.applicationId, loadedApps)<0){
                 appItems += '<li><a data-val='+ app.applicationId +' href="#">' + app.applicationName +'</a></li>'
                 apps.push(" "+app.applicationId);
