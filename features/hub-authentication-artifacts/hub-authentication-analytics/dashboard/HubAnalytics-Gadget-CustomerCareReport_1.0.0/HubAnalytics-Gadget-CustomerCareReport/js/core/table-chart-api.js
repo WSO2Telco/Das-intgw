@@ -139,7 +139,8 @@ var getConfig, validate, isProviderRequired, draw, update, setTableInfo;
                         "filter": true,
                         "paging":true,
                         "pagingType": "full_numbers",
-                        "pageLength": 5,
+                        "pageLength": 20,
+                        "lengthChange": false,
                         scrollCollapse: true,
                         scrollY:'70vh',
                         "dom": '<"dataTablesTop"' +
