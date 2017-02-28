@@ -123,6 +123,9 @@ $(function () {
                 async: false,
                 success: function (data) {
                     var tableData = data["tableData"];
+                    if(!tableData) {
+                        tableData = data;
+                    }
                     $("#dropdown-operator").empty();
                     var operatorsItems = "";
                     var operatorIds = [];
@@ -167,6 +170,9 @@ $(function () {
                 async: false,
                 success: function (data) {
                     var tableData = data["tableData"];
+                    if(!tableData) {
+                        tableData = data;
+                    }
                     $("#dropdown-sp").empty();
                     var spItems = '';
                     var spIds = [];
@@ -215,6 +221,9 @@ $(function () {
                 async: false,
                 success: function (data) {
                     var tableData = data["tableData"];
+                    if(!tableData) {
+                        tableData = data;
+                    }
                     $("#dropdown-app").empty();
                     var apps = [];
                     var loadedApps = [];
