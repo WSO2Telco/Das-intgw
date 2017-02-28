@@ -81,7 +81,8 @@ $(function () {
         });
         if(providerData != '') {
             $("#generateCSV").show();
-            $("#showCSV").show();
+        } else {
+            $("#generateCSV").hide();
         }
         return providerData;
     };
@@ -98,6 +99,8 @@ $(function () {
     $("#button-search").click(function() {
         $("#canvas").html("");
         $("#canvas2").html("");
+        $("#showCSV").hide();
+
         getGadgetLocation(function (gadget_Location) {
             gadgetLocation = gadget_Location;
             init();

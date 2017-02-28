@@ -89,7 +89,7 @@ public class CSVWriter {
         FileWriter writer = new FileWriter(file, true);
         BufferedWriter bufferedWriter = new BufferedWriter(writer, bufSize);
 
-        Map<String, Integer> apiCount = new HashMap<>();
+        Map<String, Integer> apiCount = new TreeMap<>();
         Integer count = 0;
 
         if (records.size() > 0) {
@@ -104,7 +104,6 @@ public class CSVWriter {
                 apiCount.put(key, count);
              }
         }
-
 
         StringBuilder sb = new StringBuilder();
         sb.append("API");
