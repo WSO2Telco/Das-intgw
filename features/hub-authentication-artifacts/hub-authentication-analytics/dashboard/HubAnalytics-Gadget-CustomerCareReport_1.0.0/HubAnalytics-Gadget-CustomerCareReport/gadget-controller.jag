@@ -132,7 +132,7 @@
             print(tempResult);
         }
         else{
-            var result = providerAPI.getData(providerConf, 0, 10);
+            var result = providerAPI.getData(providerConf, 0, 60);
             var tableLength = getTableInfo(providerAPI);
             tempResult["tableData"] = result;
             tempResult["tableInfo"] = tableLength;
