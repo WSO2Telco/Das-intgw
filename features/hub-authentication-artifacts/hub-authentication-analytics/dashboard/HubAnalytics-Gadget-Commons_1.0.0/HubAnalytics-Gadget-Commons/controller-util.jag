@@ -11,6 +11,7 @@ var loggedInUser = {
     isServiceProvider: false,
     isCustomerCareUser: false,
     isPublisher: false,
+    isViewer: false,
     hasNoRole:false
 };
 
