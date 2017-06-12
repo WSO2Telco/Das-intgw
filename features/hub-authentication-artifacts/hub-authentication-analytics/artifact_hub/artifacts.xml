@@ -25,5 +25,6 @@
         <dependency artifact="HubAnalytics-Gadget-CustomerCareReport" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="HubAnalytics-Gadget-TrafficReport" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
         <dependency artifact="HubAnalytics-Dashboard-Reporting" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+                <dependency artifact="HubAnalytics-Gadget-Commons" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
     </artifact>
 </artifacts>

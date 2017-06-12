@@ -1,0 +1,12 @@
+{
+  "roles": {
+    "admin_role": "admin",
+    "internal_admin_role": "internal-gateway-admin",
+    "customercare_role": "customercare",
+    "serviceprovider_role": "Internal/subscriber",
+    "publisher_role": "Internal/publisher",
+    "viewer_role": "business-unit-viewer"
+  }
+}
+
+

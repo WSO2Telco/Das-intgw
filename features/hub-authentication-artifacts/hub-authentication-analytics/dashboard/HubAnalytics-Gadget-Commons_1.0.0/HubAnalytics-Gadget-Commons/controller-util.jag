@@ -1,0 +1,171 @@
+<%
+var carbon = require('carbon');
+
+include("./constants.jag");
+var roles = require ("./site.json").roles;
+
+var log = new Log();
+
+var loggedInUser = {
+    isAdmin: false,
+    isServiceProvider: false,
+    isCustomerCareUser: false,
+    isPublisher: false,
+    isViewer: false,
+    hasNoRole:false
+};
+
+//TODO: NO need to use get role function do it in single function
+function getLoggedInUser () {
+
+    var user = session.get('user');
+    if(user == null) {
+        response.status=403;
+        return;
+    }
+
+    var role = getRole(user);
+
+    switch (role) {
+        case roles.admin_role:
+            loggedInUser.isAdmin = true;
+            break;
+        case roles.internal_admin_role:
+            loggedInUser.isAdmin = true;
+            break;
+        case roles.customercare_role:
+            loggedInUser.isCustomerCareUser = true;
+            break;
+        case roles.serviceprovider_role:
+            loggedInUser.isServiceProvider = true;
+            break;
+        case roles.publisher_role:
+            loggedInUser.isPublisher = true;
+            break;
+        case roles.viewer_role:
+            loggedInUser.isViewer = true;
+            break;
+        default:
+            loggedInUser.hasNoRole = true;
+    }
+
+    loggedInUser.username = user.username + "@" + user.domain;
+    loggedInUser.tenantId = user.tenantId;
+    loggedInUser.domain = user.domain;
+    return loggedInUser;
+}
+
+function getRole (user) {
+    var role;
+    for (var i = 0; i < user.roles.length; i++) {
+        var tempRole = user.roles[i];
+        if (tempRole == roles.admin_role) {
+            role = roles.admin_role;
+            break;
+        } else if (tempRole == roles.customercare_role) {
+            role = roles.customercare_role;
+            break;
+        }  else if (tempRole == roles.publisher_role) {
+            role = roles.publisher_role;
+            break;
+        } else if (tempRole == roles.serviceprovider_role) {
+            role = roles.serviceprovider_role;
+        } else if (tempRole == roles.internal_admin_role) {
+            role = roles.internal_admin_role;
+        } else if (tempRole == roles.viewer_role) {
+            role = roles.viewer_role;
+        }
+    }
+    return role;
+}
+
+function getDataQuery(data) {
+    var providerConf = data[PROVIDER_CONF];
+    var all = true;
+    var serviceProvider = "";
+
+    if (loggedInUser.isServiceProvider) {
+        serviceProvider = loggedInUser.username;
+    }
+
+    if (providerConf[PROVIDER_NAME] == TYPE.OPERATOR) {
+        if (data.operatorName != "all" && data.operatorName != undefined) {
+            providerConf.query += "operatorName:" + "(" + data.operatorName + ")";
+            all = false;
+        }
+    } else if (providerConf[PROVIDER_NAME] == TYPE.SP) {
+        if (data.serviceProvider != "0" && data.operatorName != undefined) {
+            if(data.operatorName != "all" )  {
+                providerConf.query += "serviceProviderId:" + "(" + data.serviceProvider + ")" +" AND operatorName:" + "(" + data.operatorName + ")";
+            } else  {
+                providerConf.query += "serviceProviderId:" + "(" + data.serviceProvider + ")";
+            }
+            all = false;
+        }
+
+    } else if (providerConf[PROVIDER_NAME] == TYPE.APP) {
+        if (data.applicationId != "()" && data.applicationId != "0" && data.operatorName != undefined) {
+            providerConf.query += "applicationId:" + data.applicationId;
+            all = false;
+        }
+    }
+
+    var andSign = '';
+
+    if ((!(loggedInUser.isAdmin) && all == false) || (providerConf[PROVIDER_NAME] == BATCH)) {
+        andSign = ' AND ';
+    }
+
+    /*if (loggedInUser.isOperatorAdmin) {
+     providerConf.query += andSign + " operatorName:" + loggedInUser.operatorNameInProfile;
+
+     }*/
+
+    if (loggedInUser.isServiceProvider && (providerConf[PROVIDER_NAME] == TYPE.OPERATOR || providerConf[PROVIDER_NAME] == TYPE.SP)) {
+        providerConf.query += andSign + ' _serviceProvider:"' + serviceProvider + '"';
+        providerConf.tableName = STREAM.API_SUMMERY;
+
+    } else if (loggedInUser.isServiceProvider && providerConf[PROVIDER_NAME] == BATCH) {
+        providerConf.query += andSign + ' _serviceProvider:"' + serviceProvider + '"';
+
+    } else if (loggedInUser.isPublisher && (providerConf[PROVIDER_NAME] == TYPE.OPERATOR || providerConf[PROVIDER_NAME] == BATCH)) {
+        providerConf.query += andSign + ' _serviceProvider:"' + serviceProvider + '"';
+    }
+    return providerConf.query;
+};
+
+function getBatchQuery(data) {
+    var providerConf = data[PROVIDER_CONF];
+
+    providerConf.query = "responseTime:[" + data.dateStart + " TO " + data.dateEnd + "]";
+
+
+    if (data.applicationName != "0" && data.applicationName != undefined) {
+        providerConf.query += " AND applicationId:" + data.applicationName;
+    }
+
+    if (data.api != "0" && data.api != undefined) {
+        providerConf.query += " AND apiID:" + data.api;
+    }
+
+    if (loggedInUser.isServiceProvider) {
+        serviceProvider = loggedInUser.username;
+        providerConf.query += " AND serviceProvider:" + "\"" + serviceProvider + "\"";
+    } else {
+        if (data.serviceProvider != "0" && data.serviceProvider != undefined) {
+            providerConf.query += " AND serviceProvider:" + "\"" + data.serviceProvider + "\"";
+        }
+    }
+
+    return providerConf.query;
+}
+
+
+function isMultiValue(data) {
+    var data_length = data.split(",").lenght;
+    if (data_length > 1) {
+        return true;
+    }
+    return false;
+}
+%>
