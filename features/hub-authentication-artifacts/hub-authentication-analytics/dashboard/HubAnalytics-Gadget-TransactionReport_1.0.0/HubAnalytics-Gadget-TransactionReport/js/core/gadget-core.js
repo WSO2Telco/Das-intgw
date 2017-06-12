@@ -168,7 +168,7 @@ $(function () {
                               var operatorIds = [];
                               var loadedOperator = [];
                               operatorIds.push(operatorId);
-                              operatorsItems += '<li><a data-val="0" href="#">All</a></li>';
+                              operatorsItems += '<li><a data-val="0" href="#">All Operator</a></li>';
                               for (var i =0 ; i < data.length; i++) {
                                   var operator = data[i];
                                   if($.inArray(operator.operatorId, loadedOperator)<0){
@@ -178,7 +178,7 @@ $(function () {
                                 }
                               }
                               $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
-                              $("#button-operator").val('<li><a data-val="0" href="#">All</a></li>');
+                              $("#button-operator").val('<li><a data-val="0" href="#">All Operator</a></li>');
                               loadSP(operatorIds);
 
                               $("#dropdown-operator li a").click(function(){
@@ -209,7 +209,7 @@ $(function () {
                     var spIds = [];
                     var loadedSps = [];
                     spIds.push(serviceProviderId);
-                    spItems += '<li><a data-val="0" href="#">All</a></li>';
+                    spItems += '<li><a data-val="0" href="#">All Service Provider</a></li>';
                     for ( var i =0 ; i < data.length; i++) {
                         var sp = data[i];
                         if($.inArray(sp.serviceProviderId, loadedSps)<0){
@@ -221,8 +221,8 @@ $(function () {
 
                     $("#dropdown-sp").html(spItems);
 
-                    $("#button-sp").text('All');
-                    $("#button-sp").val('<li><a data-val="0" href="#">All</a></li>');
+                 //   $("#button-sp").text('All');
+                    $("#button-sp").val('<li><a data-val="0" href="#">All Service Provider</a></li>');
                     loadApp(spIds);
                     $("#dropdown-sp li a").click(function(){
 
@@ -258,7 +258,7 @@ $(function () {
                 $("#dropdown-app").empty();
                 var apps = [];
                 var loadedApps = [];
-                var appItems = '<li><a data-val="0" href="#">All</a></li>';
+                var appItems = '<li><a data-val="0" href="#">All Application</a></li>';
                 apps.push(applicationId);
                 for ( var i =0 ; i < data.length; i++) {
                     var app = data[i];
@@ -270,8 +270,8 @@ $(function () {
                 }
 
                 $("#dropdown-app").html( $("#dropdown-app").html() + appItems);
-                $("#button-app").val('<li><a data-val="0" href="#">All</a></li>');
-                $("#button-app").text('All');
+                $("#button-app").val('<li><a data-val="0" href="#">All Application</a></li>');
+            //    $("#button-app").text('All');
                 // loadApp(sps[i]);
 
                 loadApi(apps);
@@ -309,7 +309,7 @@ $(function () {
               $("#dropdown-api").empty();
               var apis = [];
               var loadedApis = [];
-              var apiItems = '<li><a data-val="0" href="#">All</a></li>';
+              var apiItems = '<li><a data-val="0" href="#">All Api</a></li>';
               for ( var i =0 ; i < data.length; i++) {
                   var api = data[i];
                   if($.inArray(api.apiID, loadedApis)<0){
@@ -319,8 +319,8 @@ $(function () {
               }
 
               $("#dropdown-api").html( $("#dropdown-api").html() + apiItems);
-              $("#button-api").val('<li><a data-val="0" href="#">All</a></li>');
-              $("#button-api").text('All');
+              $("#button-api").val('<li><a data-val="0" href="#">All Api</a></li>');
+           //   $("#button-api").text('All');
               // loadApp(sps[i]);
               $("#dropdown-api li a").click(function(){
                   $("#button-api").text($(this).text());

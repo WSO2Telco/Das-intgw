@@ -19,133 +19,192 @@
  */
 (function () {
 
-    response.contentType = 'application/json';
-    var PROVIDER_CONF = 'provider-conf';
-    var PROVIDER_NAME = 'provider-name';
+    var TABLE_PROCESSEDSTATISTICS = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS";
 
+    response.contentType = 'application/json';
     var action = request.getParameter("action");
-    var filter = request.getParameter("filter");
-    var data = request.getContent();
-    var providerConf = data[PROVIDER_CONF];
     var carbon = require('carbon');
-    var role = "";
-    var serviceProvider = "";
 
     var log = new Log();
-    var providerAPI = require('js/core/' + providerConf[PROVIDER_NAME] + '-provider-api.js');
 
-    if (action === 'getSchema') {
-        print(providerAPI.getSchema(providerConf));
+    include("../HubAnalytics-Gadget-Commons/controller-util.jag");
+
+    var loggedInUser = getLoggedInUser();
+
+    if (action === "getLoggedInUser") {
+        var jsonUser = {"LoggedInUser": loggedInUser};
+        print(jsonUser);
         return;
+    }
+
+    var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
+    var tenantId = userRealmService.getTenantManager().getTenantId(loggedInUser.domain);
+    var userRealm = userRealmService.getTenantUserRealm(tenantId);
+    var userStore = userRealm.getUserStoreManager();
+    var department = userStore.getUserClaimValue(loggedInUser.username.replace("@carbon.super",""), 'http://wso2.org/claims/department', null);
+
+
+    if(action === 'getDataForTable'){
+
+        var providerAPI = require('js/core/batch-provider-api.js');
+        var providerConf={};
+        providerConf.tableName=TABLE_PROCESSEDSTATISTICS;
+        providerConf.query="";
+        providerConf.sort={};
+
+        var sortfield =request.getParameter("columns["+request.getParameter("order[0][column]")+"][data]");
+        var sortType = request.getParameter("order[0][dir]");
+
+        if(sortfield.trim() == ""){
+            sortfield = "responseTime";
+        }
+
+        providerConf.sort.field=sortfield;
+        providerConf.sort.type=sortType.toUpperCase();
+
+        var start=request.getParameter("start");
+        var length=request.getParameter("length");
+        var draw=request.getParameter("draw");
+        var search=request.getParameter("search[value]");
+
+        var serviceProviderId = request.getParameter("a[serviceProvider]");
+        var operator = request.getParameter("a[operator]");
+        var operatorList = request.getParameter("a[operatorList][]");
+
+        var spIdList = request.getParameter("a[spIdList][]");
+        var appList = request.getParameter("a[appList][]");
+
+        var application = request.getParameter("a[application]");
+        var dateEnd = request.getParameter("a[dateEnd]");
+        var dateStart = request.getParameter("a[dateStart]");
+
+        var recordsTotal=providerAPI.getRecordCount(providerConf);
+
+        providerConf.query = "responseTime:["+dateStart+" TO "+dateEnd+"] ";
+        if(search != null && search != undefined && search !="") {
+            providerConf.query = concatQuery(providerConf.query,createSearchQuery(search, "jsonBody"));
+        }
+        providerConf.query = createQuery(serviceProviderId, spIdList, providerConf.query, "serviceProviderId");
+        providerConf.query = createQuery(application, appList, providerConf.query, "applicationId");
+        if(loggedInUser.isViewer){
+            providerConf.query =  createQuery(department, department, providerConf.query, "department");
+        }
+
+        log.info("providerConf.query >> "+providerConf.query);
+        var recordsFiltered=providerAPI.getRecordCount(providerConf);
+
+        var resultPre = stringify( providerAPI.getDataBySearch(providerConf, start, length));
+        var result = resultPre.replace(/\r?\n|\r/g, " dd ");
+        result = '{  "draw": '+draw+', "recordsTotal": '+recordsTotal+',  "recordsFiltered": '+recordsFiltered+',  "data":' + result+' }';
+        print(result);
+
     } else if(action === 'getData'){
+
 
         //Check logged in user role and decide which operators to load
         var all = true;
         var currentOperator;
-        var user = session.get('user');
 
-        var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
-        var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
-        var userRealm = userRealmService.getTenantUserRealm(tenantId);
-        var userStore = userRealm.getUserStoreManager();
-        var department = userStore.getUserClaimValue(user.username, 'http://wso2.org/claims/department', null);
 
-        for (var i =0; i < user.roles.length; i++) {
-            if (user.roles[i] == "admin" || user.roles[i] == "internal-gateway-admin") {
-                role = "admin";
-                break;
-            } else if(user.roles[i] == "business-unit-viewer"){
-                role = "viewer";
-            } else if(user.roles[i] == "Internal/subscriber" && role != "viewer"){
-                role = "serviceProvider";
-                serviceProvider = user.username+"@"+user.domain;
+        var PROVIDER_NAME = 'provider-name';
+        var PROVIDER_CONF = 'provider-conf';
+        var data = request.getContent();
+        var providerConf = data[PROVIDER_CONF];
+
+        var providerAPI = require('js/core/batch-provider-api.js');
+
+        providerConf.query="";
+        var operator = data.operatorName;
+
+
+        if (providerConf[PROVIDER_NAME] == "operator") {
+            if (data.operator != "0" && data.operator != "(0)" && data.operator != undefined) {
+                providerConf.query +=  "operatorId:"+ data.operator;
+                all = false;
+            }
+        } else if(providerConf[PROVIDER_NAME] == "operatorsp") {
+            if(data.serviceProvider != "0" && data.serviceProvider != "(0)" && data.operator != undefined){
+                providerConf.query +=  "serviceProviderId:"+ data.serviceProvider;
+                all = false;
+            }
+        } else if(providerConf[PROVIDER_NAME] == "app") {
+            if(data.applicationId!="()" && data.applicationId!="0" && data.applicationId!="(0)" && data.operator != undefined){
+                providerConf.query +=  "applicationId:"+ data.applicationId;
+                all = false;
             }
         }
+        if(roles.viewer_role){
+            providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+            providerConf.query =  createQuery(department, department, providerConf.query, "department");
+            print(providerAPI.getData(providerConf));
+            return;
+        } else if(loggedInUser.isServiceProvider && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "sp")){
+            providerConf.query = createQuery(loggedInUser.username, loggedInUser.username, providerConf.query, "_serviceProvider");
+            providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
+            print(providerAPI.getData(providerConf));
+            return;
 
-        if (providerConf[PROVIDER_NAME] == "batch") {
-
-                 providerConf.query += "responseTime:["+data.dateStart+" TO "+data.dateEnd+"]";
-                    if (data.operator != "0" && data.operator != undefined) {
-                        providerConf.query +=  " AND operatorId:"+ data.operator;
-                    }
-                    if (data.serviceProvider != "0" && data.serviceProvider != undefined) {
-                        providerConf.query +=  " AND serviceProviderId:"+ "\""+ data.serviceProvider+ "\"";
-                    }
-                    if (data.msisdn.toLowerCase().trim() != "") {
-                        providerConf.query +=  " AND msisdn:"+ data.msisdn;
-                    }
-                    if (data.applicationName != "0" && data.applicationName != undefined) {
-                        providerConf.query +=  " AND applicationId:"+ data.applicationName;
-                    }
-        } else if (providerConf[PROVIDER_NAME] == "operator") {
-                  if (data.operator != "0" && data.operator != "(0)" && data.operator != undefined) {
-                              providerConf.query +=  "operatorId:"+ data.operator;
-                              all = false;
-                  }
-        }else if(providerConf[PROVIDER_NAME] == "sp") {
-                  if(data.serviceProvider != "0" && data.serviceProvider != "(0)" && data.operator != undefined){
-                            providerConf.query +=  "serviceProviderId:"+ data.serviceProvider;
-                            all = false;
-                  }
-        }else if(providerConf[PROVIDER_NAME] == "app") {
-                  if(data.applicationId!="()" && data.applicationId!="0" && data.applicationId!="(0)" && data.operator != undefined){
-                        providerConf.query +=  "applicationId:"+ data.applicationId;
-                        all = false;
-                  }
+        }else if(loggedInUser.isServiceProvider){
+            providerConf.query =  createQuery(loggedInUser.username, loggedInUser.username, providerConf.query, "_serviceProvider");
+        }else if(loggedInUser.publisher_role && providerConf[PROVIDER_NAME] == "operator" ){
+            providerConf.query =  createQuery(loggedInUser.username, loggedInUser.username, providerConf.query, "_serviceProvider");
         }
 
-        var andSign = '';
-        if((role != "admin" &&  all == false) || (providerConf[PROVIDER_NAME] == "batch")){
-         andSign =  ' AND ';
-        }
-        log.info("role => "+role+"    providerConf[PROVIDER_NAME] =>"+providerConf[PROVIDER_NAME] +"  "+(providerConf[PROVIDER_NAME] == "sp" || providerConf[PROVIDER_NAME] == "batch"));
-        if(role =="viewer" && providerConf[PROVIDER_NAME] != "batch"){
-          providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
-          providerConf.query +=  andSign +' department:"'+department+'"';
-          print(providerAPI.getData(providerConf));
-          return;
-        }else if(role =="viewer" && providerConf[PROVIDER_NAME] == "batch"){
-          providerConf.query +=  andSign +' department:"'+department+'"';
-        }else if(role =="serviceProvider" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "sp")){
-                  var serviceProviderName = user.username +"@"+ user.domain;
-                  providerConf.query +=  andSign +' _serviceProvider:"'+serviceProviderName+'"';
-                  providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
-                  print(providerAPI.getData(providerConf));
-                  return;
-
-        }else if(role =="serviceProvider" && providerConf[PROVIDER_NAME] == "batch"){
-           var serviceProviderName = user.username +"@"+ user.domain;
-          providerConf.query +=  andSign +' _serviceProvider:"'+serviceProviderName+'"';
-        }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
-          providerConf.query +=  andSign +' _serviceProvider:"'+serviceProvider+'"';
-        }
-
-        var displayStart = data.displayStart;
-        var displayLength = data.displayLength;
-        var records = data.records;
-        var isTableUpdate = data.isTableUpdate;
-        var tempResult = {};
-
-        if(isTableUpdate) {
-            var result = providerAPI.getData(providerConf, records, displayLength);
-            tempResult["tableData"] = result;
-            print(tempResult);
-        }
-        else{
-            var result = providerAPI.getData(providerConf, 0, 60);
-            var tableLength = getTableInfo(providerAPI);
-            tempResult["tableData"] = result;
-            tempResult["tableInfo"] = tableLength;
-            print(tempResult);
-        }
-    }
-
-    function getTableInfo() {
-        var a = providerAPI.getData(providerConf, 0, 10000000);
-        return a.length;
+        print(providerAPI.getData(providerConf));
     }
 
 }());
 
+function concatQuery(query, newQuery){
+    query +=( (query != null) &&   (query.trim().length > 0))?" AND ":"";
+    return query + newQuery;
+};
+
+function createQuery(provider, providerList, baseQuery, columnName) {
+
+    if( provider != null && provider != undefined && providerList != null && provider != "") {
+        if( (provider.toString().trim().toUpperCase() == 'ALL' || provider == 0)) {
+
+            var operatorListText = "";
+            for (var p in providerList){
+                operatorListText += providerList[p].toString().trim()+" ";
+            }
+            return concatQuery(baseQuery, columnName+": ("+operatorListText+")");
+
+        }else {
+
+            return concatQuery(baseQuery, columnName+": "+provider.toString().trim());
+        }
+    }
+    else
+    {
+        return  baseQuery;
+    }
+};
+
+function createSearchQuery(searchText, columnName) {
+    var query = "";
+    var search = searchText.trim();
+        if(search.indexOf(" ") != -1) {
+            var searchArray = search.split(" ");
+            var a = 0;
+            for (var p in searchArray) {
+                var text = searchArray[p].toString().trim();
+                a++;
+                if(text != "") {
+                    query = concatQuery(query , columnName + ":" + text);
+                }
+            }
+        }
+        else {
+            query = columnName + ":"+search;
+        }
+    return query;
+};
+
+
+function loginfo(text){
+    log.info( text +" >> "+text);
+};
 
 %>
