@@ -121,9 +121,6 @@ $(function () {
                     }
                 },
                 {
-                    "data": "operatorName"
-                },
-                {
                     "data": "msisdn"
                 },
                 {
@@ -199,7 +196,7 @@ $(function () {
             async: false,
             success: function (data) {
                 conf.spIds = setDropdown("#dropdown-sp", "#button-sp", data, conf.serviceProvider, "serviceProviderId", "@carbon.super","serviceProvider");
-                loadApp();             
+                loadApp();
                 $("#dropdown-sp li a").click(function () {                                        
                     providerButtons("#button-sp", this);
                     conf.serviceProvider =  "\"" + $(this).data('val') +"\"";

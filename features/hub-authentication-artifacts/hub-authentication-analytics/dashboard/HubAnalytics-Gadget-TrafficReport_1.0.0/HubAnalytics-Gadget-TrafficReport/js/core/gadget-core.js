@@ -213,7 +213,7 @@ $(function () {
 
                     $("#dropdown-operator li a").click(function(){
                         $("#button-operator").text($(this).text());
-                        $("#button-operator").append('<span class="caret"></span>');
+                        $("#button-operator").append('&nbsp;<span class="caret"></span>');
                         $("#button-operator").val($(this).text());
                         operatorIds = $(this).data('val');
                         loadSP(operatorIds);
@@ -259,7 +259,7 @@ $(function () {
                 $("#dropdown-sp li a").click(function(){
 
                     $("#button-sp").text($(this).text());
-                    $("#button-sp").append('<span class="caret"></span>');
+                    $("#button-sp").append('&nbsp;<span class="caret"></span>');
                     $("#button-sp").val($(this).text());
                     // var clickedSP = [];
                     // clickedSP.push($(this).data('val'));
@@ -311,7 +311,7 @@ $(function () {
             $("#dropdown-app li a").click(function(){
 
                 $("#button-app").text($(this).text());
-                $("#button-app").append('<span class="caret"></span>');
+                $("#button-app").append('&nbsp;<span class="caret"></span>');
                 $("#button-app").val($(this).text());
                 // var clickedSP = [];
                 // clickedSP.push($(this).data('val'));
@@ -356,7 +356,7 @@ $(function () {
           // loadApp(sps[i]);
           $("#dropdown-api li a").click(function(){
               $("#button-api").text($(this).text());
-              $("#button-api").append('<span class="caret"></span>');
+              $("#button-api").append('&nbsp;<span class="caret"></span>');
               $("#button-api").val($(this).text());
               apiId = $(this).data('val');
           });

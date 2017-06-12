@@ -105,7 +105,6 @@
         var all = true;
         var currentOperator;
 
-
         var PROVIDER_NAME = 'provider-name';
         var PROVIDER_CONF = 'provider-conf';
         var data = request.getContent();
@@ -133,7 +132,7 @@
                 all = false;
             }
         }
-        if(roles.viewer_role){
+        if(roles.viewer_role && !loggedInUser.isAdmin){
             providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             providerConf.query =  createQuery(department, department, providerConf.query, "department");
             print(providerAPI.getData(providerConf));
@@ -144,9 +143,9 @@
             print(providerAPI.getData(providerConf));
             return;
 
-        }else if(loggedInUser.isServiceProvider){
+        } else if(loggedInUser.isServiceProvider){
             providerConf.query =  createQuery(loggedInUser.username, loggedInUser.username, providerConf.query, "_serviceProvider");
-        }else if(loggedInUser.publisher_role && providerConf[PROVIDER_NAME] == "operator" ){
+        } else if(loggedInUser.publisher_role && providerConf[PROVIDER_NAME] == "operator" ){
             providerConf.query =  createQuery(loggedInUser.username, loggedInUser.username, providerConf.query, "_serviceProvider");
         }
 

@@ -130,7 +130,6 @@
                                     <th>API</th>
                                     <th>Service Provider</th>
                                     <th>Response Time</th>
-                                    <th>Operator</th>
                                     <th>MSISDN</th>
                                     <th>Application</th>
                                     <th>Request Id</th>
@@ -144,7 +143,6 @@
                                     <th>API</th>
                                     <th>Service Provider</th>
                                     <th>Response Time</th>
-                                    <th>Operator</th>
                                     <th>MSISDN</th>
                                     <th>Application</th>
                                     <th>Request Id</th>
