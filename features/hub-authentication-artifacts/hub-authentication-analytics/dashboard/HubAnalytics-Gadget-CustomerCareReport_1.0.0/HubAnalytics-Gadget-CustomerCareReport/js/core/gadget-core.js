@@ -138,7 +138,7 @@ $(function () {
             ],
             "language": {
                 "search": "Search Json Content:",
-                "searchPlaceholder": "Ex: mess?g*"
+                "searchPlaceholder": "Ex: messageOne messageTwo"
             }
         });
     };
