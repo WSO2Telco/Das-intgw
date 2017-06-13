@@ -189,9 +189,6 @@
                 },
                 "anon":{
 
-                },
-                "view0":{
-
                 }
             },
             "views":{
@@ -212,20 +209,11 @@
                             "admin",
                             "business-unit-viewer",
                             "customercare",
-                            "Internal/subscriber",
                             "internal-gateway-admin"
                         ]
-                    },
-                    "view0":{
-                        "blocks":[
-
-                        ],
-                        "name":"View 0",
-                        "roles":[
-                            "Internal/everyone"
-                        ]
                     }
-                }
+                },
+                "fluidLayout": false
             }
         },
         {
@@ -299,7 +287,6 @@
     "menu":[
         {
             "id":"traffic-report",
-            "isanon":false,
             "ishidden":false,
             "title":"Traffic Report",
             "subordinates":[
@@ -308,7 +295,6 @@
         },
         {
             "id":"transaction-report",
-            "isanon":false,
             "ishidden":false,
             "title":"Transaction Report",
             "subordinates":[
@@ -317,7 +303,6 @@
         },
         {
             "id":"customer-care-report",
-            "isanon":false,
             "ishidden":false,
             "title":"Customer Care Report",
             "subordinates":[
@@ -326,7 +311,6 @@
         },
         {
             "id":"response-time-report",
-            "isanon":false,
             "ishidden":false,
             "title":"Response Time Report",
             "subordinates":[
