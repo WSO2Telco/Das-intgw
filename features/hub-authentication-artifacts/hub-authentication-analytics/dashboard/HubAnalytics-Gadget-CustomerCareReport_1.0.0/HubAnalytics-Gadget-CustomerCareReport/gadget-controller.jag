@@ -20,6 +20,8 @@
 (function () {
 
     var TABLE_PROCESSEDSTATISTICS = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS";
+    var TABLE_OPERATOR_SUMMARY = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_OPERATOR_SUMMARY";
+    var TABLE_API_SUMMARY = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
 
     response.contentType = 'application/json';
     var action = request.getParameter("action");
@@ -115,23 +117,16 @@
         providerConf.query="";
         var operator = data.operatorName;
 
-
-        if (providerConf[PROVIDER_NAME] == "operator") {
-            if (data.operator != "0" && data.operator != "(0)" && data.operator != undefined) {
-                providerConf.query +=  "operatorId:"+ data.operator;
-                all = false;
-            }
-        } else if(providerConf[PROVIDER_NAME] == "operatorsp") {
-            if(data.serviceProvider != "0" && data.serviceProvider != "(0)" && data.operator != undefined){
-                providerConf.query +=  "serviceProviderId:"+ data.serviceProvider;
-                all = false;
-            }
-        } else if(providerConf[PROVIDER_NAME] == "app") {
-            if(data.applicationId!="()" && data.applicationId!="0" && data.applicationId!="(0)" && data.operator != undefined){
-                providerConf.query +=  "applicationId:"+ data.applicationId;
-                all = false;
-            }
+        if (providerConf[PROVIDER_NAME] == "operator"){
+            providerConf.tableName = TABLE_OPERATOR_SUMMARY
+        } else if (providerConf[PROVIDER_NAME] == "operatorsp"){
+            providerConf.tableName = TABLE_API_SUMMARY;
+            providerConf.query = createQuery(data.operatorName, data.operatorNames, providerConf.query, "operatorName");
+        } else if (providerConf[PROVIDER_NAME] == "app"){
+            providerConf.tableName = TABLE_API_SUMMARY;
+            providerConf.query = createQuery(data.serviceProvider, data.spIds, providerConf.query, "serviceProviderId");
         }
+
         if(roles.viewer_role && !loggedInUser.isAdmin){
             providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             providerConf.query =  createQuery(department, department, providerConf.query, "department");
