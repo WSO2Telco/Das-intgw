@@ -164,6 +164,7 @@ $(function () {
                 async: false,
                 success: function (data) {
                     $("#dropdown-sp").empty();
+                    $("#button-sp").text('All Service provider');
                     var spItems = '';
                     var spIds = [];
                     var loadedSps = [];
@@ -216,6 +217,7 @@ $(function () {
             success: function (data) {
 
                 $("#dropdown-app").empty();
+                $("#button-app").text('All Application');
                 var apps = [];
                 var loadedApps = [];
                 var appItems = '<li><a data-val="0" href="#">All Application</a></li>';
@@ -266,6 +268,7 @@ $(function () {
             // alert("loadApi :" +JSON.stringify(data));
 
               $("#dropdown-api").empty();
+              $("#button-api").text('All Api');
               var apis = [];
               var loadedApis = [];
               var apiItems = '<li><a data-val="0" href="#">All Api</a></li>';
