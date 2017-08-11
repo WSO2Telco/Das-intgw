@@ -82,6 +82,7 @@ $(function () {
 
 
     $("#button-generate").click(function () {
+        $("#output").html("");
         $("#canvas").html("");
         getGadgetLocation(function (gadget_Location) {
             gadgetLocation = gadget_Location;
@@ -243,8 +244,6 @@ $(function () {
         }
 
         function loadApp (sps){
-        // alert(sps);
-        // if(sps)
         conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
         conf["provider-conf"]["provider-name"] = "sp";
         conf.serviceProvider = "("+sps+")";

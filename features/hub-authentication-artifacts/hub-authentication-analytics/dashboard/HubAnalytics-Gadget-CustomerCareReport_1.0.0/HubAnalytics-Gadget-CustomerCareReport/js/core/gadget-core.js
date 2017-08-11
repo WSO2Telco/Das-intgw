@@ -199,7 +199,11 @@ $(function () {
                 loadApp();
                 $("#dropdown-sp li a").click(function () {                                        
                     providerButtons("#button-sp", this);
-                    conf.serviceProvider =  "\"" + $(this).data('val') +"\"";
+                    if ($(this).data('val') == "all") {
+                        conf.serviceProvider = 0;
+                    } else {
+                        conf.serviceProvider =  "\"" + $(this).data('val') +"\"";
+                    }
                     loadApp();
                 });
             }
