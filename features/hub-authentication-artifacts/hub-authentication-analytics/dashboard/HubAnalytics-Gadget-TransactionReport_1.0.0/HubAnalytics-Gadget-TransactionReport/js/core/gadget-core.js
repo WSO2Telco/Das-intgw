@@ -90,7 +90,6 @@ $(function () {
             conf.serviceProvider = serviceProviderId;
             conf.api = apiId;
             conf.applicationName = applicationId;
-
             conf.dateStart = moment(moment($("#reportrange").text().split("-")[0]).format("MMMM D, YYYY hh:mm A")).valueOf();
             conf.dateEnd = moment(moment($("#reportrange").text().split("-")[1]).format("MMMM D, YYYY hh:mm A")).valueOf();
 
@@ -246,6 +245,7 @@ $(function () {
         function loadApp (sps){
         conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
         conf["provider-conf"]["provider-name"] = "sp";
+        applicationId = 0;
         conf.serviceProvider = "("+sps+")";
         $.ajax({
             url: gadgetLocation + '/gadget-controller.jag?action=getData',
@@ -260,7 +260,7 @@ $(function () {
                 var apps = [];
                 var loadedApps = [];
                 var appItems = '<li><a data-val="0" href="#">All Application</a></li>';
-                apps.push(applicationId);
+                //apps.push(applicationId);
                 for ( var i =0 ; i < data.length; i++) {
                     var app = data[i];
                     if($.inArray(app.applicationId, loadedApps)<0){
@@ -296,7 +296,7 @@ $(function () {
       function loadApi (apps){
       conf["provider-conf"]["tableName"] = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
       conf["provider-conf"]["provider-name"] = "app";
-      conf.applicationId = "("+apps+")";;
+      conf.applicationId = "("+apps+")";
       apiId = 0;
       $.ajax({
           url: gadgetLocation + '/gadget-controller.jag?action=getData',
