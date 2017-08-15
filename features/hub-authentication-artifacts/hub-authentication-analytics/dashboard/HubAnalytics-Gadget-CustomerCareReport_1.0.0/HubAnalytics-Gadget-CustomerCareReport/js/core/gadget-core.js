@@ -283,17 +283,20 @@ $(function () {
         }
         if (replace != null){
             $(elementDropdown).html(operatorsItems);
-           $(elementButton).text('All Service provider');
+            $(elementButton).text('All Service provider');
             $(elementButton).val('<li><a data-val="0" href="#">All</a></li>');
+            $(elementButton).append('&nbsp;<span class="caret"></span>');
         } else if(providerName2 != null) {
             $(elementDropdown).html($(elementDropdown).html() + operatorsItems);
             $(elementButton).val('<li><a data-val="0" href="#">All</a></li>');
-           $(elementButton).text('All');
+            $(elementButton).text('All Application');
+            $(elementButton).append('&nbsp;<span class="caret"></span>');
         } else{
             $(elementDropdown).html($(elementDropdown).html() + operatorsItems);
             $(elementButton).val('<li><a data-val="all" href="#">All</a></li>');
             $(elementButton).text('All Api');
-        }         
+            $(elementButton).append('&nbsp;<span class="caret"></span>');
+        }
         return operatorNames;
     };
 
