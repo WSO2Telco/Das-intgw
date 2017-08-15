@@ -86,6 +86,8 @@
             if (data.applicationId != "0" && data.applicationId != "(0)" && data.operator != undefined) {
                 providerConf.query += "applicationId:" + data.applicationId;
                 all = false;
+            } else if (data.applicationId =="(0)" && data.operator != undefined && data.serviceProvider != "(0)" && data.serviceProvider != "0") {
+                providerConf.query += "serviceProviderId:" + data.serviceProvider;
             }
 
         }
@@ -98,8 +100,6 @@
         if (role == "viewer") {
             providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             providerConf.query += andSign + ' department:"' + department + '"';
-            //     log.info(providerConf[PROVIDER_NAME] + "----------- data =>" + stringify(data));
-            //   log.info(providerConf[PROVIDER_NAME] + "----------- providerConf =>" + stringify(providerConf));
             print(providerAPI.getData(providerConf));
             return;
         } else if (role == "serviceProvider" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "sp")) {
@@ -108,13 +108,14 @@
             providerConf.tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_API_SUMMARY";
             print(providerAPI.getData(providerConf));
             return;
-        } else if (role == "serviceProvider" && providerConf[PROVIDER_NAME] == "batch") {
+        } else if (role == "serviceProvider" /*&& providerConf[PROVIDER_NAME] == "batch"*/) {
             var serviceProviderName = user.username + "@" + user.domain;
             providerConf.query += andSign + ' _serviceProvider:"' + serviceProviderName + '"';
+
         } else if (role == "publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")) {
             providerConf.query += andSign + ' _serviceProvider:"' + serviceProvider + '"';
         }
-
+        log.info("ProviderConf query ==> " + providerConf.query);
         print(providerAPI.getData(providerConf));
         return;
     } else if (user != null) {

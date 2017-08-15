@@ -209,6 +209,7 @@ $(function () {
                     }
                     $("#dropdown-operator").html( $("#dropdown-operator").html() + operatorsItems);
                     $("#button-operator").val('<li><a data-val="0" href="#">All Operator</a></li>');
+                    $("#button-operator").append('&nbsp;<span class="caret"></span>');
                     loadSP(operatorIds);
 
                     $("#dropdown-operator li a").click(function(){
@@ -256,6 +257,7 @@ $(function () {
 
             //    $("#button-sp").text('All');
                 $("#button-sp").val('<li><a data-val="0" href="#">All Service Provider</a></li>');
+                $("#button-sp").append('&nbsp;<span class="caret"></span>');
                 loadApp(spIds);
                 $("#dropdown-sp li a").click(function(){
 
@@ -305,6 +307,7 @@ $(function () {
 
             $("#dropdown-app").html( $("#dropdown-app").html() + appItems);
             $("#button-app").val('<li><a data-val="0" href="#">All Application</a></li>');
+            $("#button-app").append('&nbsp;<span class="caret"></span>');
           //  $("#button-app").text('All');
             // loadApp(sps[i]);
 
@@ -355,6 +358,7 @@ $(function () {
 
           $("#dropdown-api").html( $("#dropdown-api").html() + apiItems);
           $("#button-api").val('<li><a data-val="0" href="#">All Api</a></li>');
+          $("#button-api").append('&nbsp;<span class="caret"></span>');
         //  $("#button-api").text('All');
           // loadApp(sps[i]);
           $("#dropdown-api li a").click(function(){

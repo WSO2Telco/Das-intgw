@@ -45,9 +45,6 @@
         var currentOperator;
         var user = session.get('user');
 
-        log.info("user"+ stringify(user));
-
-
         var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
         var tenantId = userRealmService.getTenantManager().getTenantId(user.domain);
         var userRealm = userRealmService.getTenantUserRealm(tenantId);
@@ -103,6 +100,8 @@
                     if(data.applicationId!="0" && data.applicationId!="(0)" && data.operator != undefined){
                             providerConf.query +=  "applicationId:"+ data.applicationId;
                             all = false;
+                    } else if (data.applicationId =="(0)" && data.operator != undefined && data.serviceProvider != "(0)" && data.serviceProvider != "0") {
+                        providerConf.query +=  "serviceProviderId:"+ data.serviceProvider;
                     }
         }
 
@@ -125,12 +124,14 @@
                   print(providerAPI.getData(providerConf));
                   return;
 
-        }else if(role =="serviceProvider" && providerConf[PROVIDER_NAME] == "batch"){
+        }else if(role =="serviceProvider" /*&& providerConf[PROVIDER_NAME] == "batch"*/){
            var serviceProviderName = user.username +"@"+ user.domain;
           providerConf.query +=  andSign +' _serviceProvider:"'+serviceProviderName+'"';
+
         }else if(role =="publisher" && (providerConf[PROVIDER_NAME] == "operator" || providerConf[PROVIDER_NAME] == "batch")){
           providerConf.query +=  andSign +' _serviceProvider:"'+serviceProvider+'"';
         }
+        log.info("ProviderConf Query ==> " + providerConf.query);
         print(providerAPI.getData(providerConf));
 
         return;
