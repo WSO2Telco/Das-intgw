@@ -92,7 +92,7 @@
                    }
         }else if(providerConf[PROVIDER_NAME] == "sp") {
                     if(data.serviceProvider != "0" && data.serviceProvider != "(0)" && data.operator != undefined){
-                            providerConf.query +=  "serviceProviderId:"+ "\""+ data.serviceProvider+ "\"";
+                            providerConf.query +=  "serviceProviderId:"+ data.serviceProvider;
                             all = false;
                     }
         }
