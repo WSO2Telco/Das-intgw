@@ -80,6 +80,9 @@
         var dateEnd = request.getParameter("a[dateEnd]");
         var dateStart = request.getParameter("a[dateStart]");
 
+        if(loggedInUser.isViewer){
+            providerConf.query =  createQuery(department, department, providerConf.query, "department");
+        }
         var recordsTotal=providerAPI.getRecordCount(providerConf);
 
         providerConf.query = "responseTime:["+dateStart+" TO "+dateEnd+"] ";
@@ -88,9 +91,7 @@
         }
         providerConf.query = createQuery(serviceProviderId, spIdList, providerConf.query, "serviceProviderId");
         providerConf.query = createQuery(application, appList, providerConf.query, "applicationId");
-        if(loggedInUser.isViewer){
-            providerConf.query =  createQuery(department, department, providerConf.query, "department");
-        }
+
 
         log.info("providerConf.query >> " + providerConf.query);
         var recordsFiltered=providerAPI.getRecordCount(providerConf);
@@ -122,9 +123,15 @@
         } else if (providerConf[PROVIDER_NAME] == "operatorsp"){
             providerConf.tableName = TABLE_API_SUMMARY;
             providerConf.query = createQuery(data.operatorName, data.operatorNames, providerConf.query, "operatorName");
+            if(loggedInUser.isViewer){
+                providerConf.query =  createQuery(department, department, providerConf.query, "department");
+            }
         } else if (providerConf[PROVIDER_NAME] == "app"){
             providerConf.tableName = TABLE_API_SUMMARY;
             providerConf.query = createQuery(data.serviceProvider, data.spIds, providerConf.query, "serviceProviderId");
+            if(loggedInUser.isViewer){
+                providerConf.query =  createQuery(department, department, providerConf.query, "department");
+            }
         }
 
         if(roles.viewer_role && !loggedInUser.isAdmin){
