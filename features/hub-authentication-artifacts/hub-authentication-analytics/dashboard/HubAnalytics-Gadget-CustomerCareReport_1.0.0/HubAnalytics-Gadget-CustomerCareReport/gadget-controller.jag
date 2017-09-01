@@ -162,7 +162,7 @@ function concatQuery(query, newQuery){
 
 function createQuery(provider, providerList, baseQuery, columnName) {
 
-    if( provider != null && provider != undefined && providerList != null && provider != "") {
+    if( provider != null && provider != undefined && providerList != null && stringify(provider) != "") {
         if( (provider.toString().trim().toUpperCase() === "ALL") || (provider == 0)) {
             var operatorListText = "";
             for (var p in providerList){
