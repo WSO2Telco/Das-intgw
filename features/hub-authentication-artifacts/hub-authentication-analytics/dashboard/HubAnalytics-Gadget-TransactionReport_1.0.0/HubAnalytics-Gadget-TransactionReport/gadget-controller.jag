@@ -132,7 +132,7 @@
         if (action == "generate") {
 
             var fileAppend = getFileAppend(data);
-            removeAllFiles(userReportDirectory, reportPrefix);
+            //removeAllFiles(userReportDirectory, reportPrefix);
             var carbon = require('carbon');
             var service = service = carbon.server.osgiService('org.wso2telco.analytics.hub.report.engine.ReportEngineService');
 

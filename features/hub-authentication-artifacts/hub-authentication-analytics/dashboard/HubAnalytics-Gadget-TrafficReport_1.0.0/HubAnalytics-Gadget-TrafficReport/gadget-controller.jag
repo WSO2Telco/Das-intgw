@@ -150,7 +150,7 @@
     }
     else if (user != null) {
 
-        var userReportDirectory = "/reports/traffic/";
+        var userReportDirectory = "/reports/traffic/" + user.username + "/";;
         var directory = "repository/deployment/server/jaggeryapps/portal" + userReportDirectory;
         var reportPrefix = user.username + FILE_NAME;
 
@@ -164,7 +164,7 @@
 
             var fileAppend = getFileAppend(data);
             var carbon = require('carbon');
-            removeAllFiles(userReportDirectory, reportPrefix);
+            //removeAllFiles(userReportDirectory, reportPrefix);
             var service = service = carbon.server.osgiService('org.wso2telco.analytics.hub.report.engine.ReportEngineService');
 
             var timeRangeUtil = Packages.org.wso2.analytics.shared.util.time.TimeRangeUtils;

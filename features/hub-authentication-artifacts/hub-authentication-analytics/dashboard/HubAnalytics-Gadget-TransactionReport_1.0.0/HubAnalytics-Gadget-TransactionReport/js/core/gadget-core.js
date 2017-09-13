@@ -118,7 +118,6 @@ $(function () {
         });
     });
 
-
     $("#button-list").click(function () {
         $("#output").html("");
         getGadgetLocation(function (gadget_Location) {
