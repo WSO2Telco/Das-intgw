@@ -123,8 +123,8 @@ $(function () {
 
             conf.dateStart = moment(moment($("#reportrange").text().split("-")[0]).format("MMMM D, YYYY hh:mm A")).valueOf();
             conf.dateEnd = moment(moment($("#reportrange").text().split("-")[1]).format("MMMM D, YYYY hh:mm A")).valueOf();
-            conf.dateStartf = moment($("#reportrange").text().split("-")[0]).format("MMM-Do-YY-hh:mm:a");
-            conf.dateEndf = moment($("#reportrange").text().split("-")[1]).format("MMM-Do-YY-hh:mm:a");
+            conf.dateStartf = moment($("#reportrange").text().split("-")[0]).format("YYYYMMDDHHmm");
+            conf.dateEndf = moment($("#reportrange").text().split("-")[1]).format("YYYYMMDDHHmm");
 
             if($("#button-type").val().toLowerCase().trim() == "error traffic") {
                 conf["provider-conf"].tableName = "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_FAILURE_SUMMARY_PER_";
