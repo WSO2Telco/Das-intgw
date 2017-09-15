@@ -19,6 +19,7 @@
  */
 (function () {
 
+    include("../HubAnalytics-Gadget-Commons/controller-util.jag");
     response.contentType = 'application/json';
     var PROVIDER_CONF = 'provider-conf';
     var PROVIDER_NAME = 'provider-name';
@@ -130,8 +131,8 @@
         var reportPrefix = user.username + FILE_NAME;
         if (action == "generate") {
 
-
-            removeAllFiles(userReportDirectory, reportPrefix);
+            var fileAppend = getFileAppend(data);
+            //removeAllFiles(userReportDirectory, reportPrefix);
             var carbon = require('carbon');
             var service = service = carbon.server.osgiService('org.wso2telco.analytics.hub.report.engine.ReportEngineService');
 
@@ -168,7 +169,7 @@
             }
 
             var reportType = "transaction";
-            var reportName = directory + reportPrefix + new Date().getTime();
+            var reportName = directory + reportPrefix + fileAppend;
             service.generateCSVReport(tableName, providerConf.query, reportName, reportMaxLength, reportType);
 
             print({'message': 'Report is generating'});
