@@ -20,17 +20,15 @@
 (function () {
 
     include("../HubAnalytics-Gadget-Commons/controller-util.jag");
+
     response.contentType = 'application/json';
     var PROVIDER_CONF = 'provider-conf';
     var PROVIDER_NAME = 'provider-name';
-    var FILE_NAME = '-transaction-report-';
-
+    var FILE_NAME = FILE_NAMES.TRANSACTION_REPORT;
 
     var action = request.getParameter("action");
     var data = request.getContent();
-
     var user = session.get('user');
-
 
     var carbon = require('carbon');
     var userRealmService = carbon.server.osgiService('org.wso2.carbon.user.api.UserRealmService');
@@ -90,7 +88,6 @@
             } else if (data.applicationId =="(0)" && data.operator != undefined && data.serviceProvider != "(0)" && data.serviceProvider != "0") {
                 providerConf.query += "serviceProviderId:" + "\""+ data.serviceProvider+ "\"";
             }
-
         }
 
         var andSign = '';
@@ -202,7 +199,6 @@
         }
     }
 }());
-
 
 function removeAllFiles(userReportDirectory, reportPrefix1) {
     var file = new File(userReportDirectory);
