@@ -208,7 +208,7 @@
 
             var reportName = directory + user.username + FILE_NAME + fileAppend;
             var reportType = "traffic";
-            service.generateCSVReport(tableName, providerConf.query, reportName, reportMaxLength, reportType);
+            service.generateCSVReport(tableName, providerConf.query, reportName, reportMaxLength, reportType, user.username);
             print({'message': 'Report is generating'});
             var file = new File(userReportDirectory);
 

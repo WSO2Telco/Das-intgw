@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 public class CSVWriter {
 
-    public static void writeTransactionCSV(List<Record> records, int bufSize, String filePath) throws IOException {
+    public static void writeTransactionCSV(List<Record> records, int bufSize, String filePath, String user) throws IOException {
 
         File file = deleteIfExists(filePath);
         file.getParentFile().mkdirs();
@@ -82,7 +82,7 @@ public class CSVWriter {
         bufferedWriter.flush();
         bufferedWriter.close();
 
-        boolean filedelted = deleteOldestfile(file.getParentFile(), "admintransreport.+");
+        boolean filedelted = deleteOldestfile(file.getParentFile(), user + "transreport.+");
     }
 
     private static File deleteIfExists(String filePath) {
@@ -93,8 +93,8 @@ public class CSVWriter {
         return file;
     }
 
-    //executed immediately after file n get created
-    private static boolean deleteOldestfile(final File file, String fileNameRegx) {
+    //executed immediately after file n get create
+    private static boolean deleteOldestfile(final File file, final String fileNameRegx) {
         boolean fileDeleted = false;
         final Pattern pattern = Pattern.compile(fileNameRegx);
         final HashMap<String, ArrayList<File>> splitFiles = new HashMap<>();
@@ -108,11 +108,12 @@ public class CSVWriter {
                 ignor that file and count them all as single instance
                 */
                 String fileName = fileObj.getName();
+                String fNameRegPrefix = fileNameRegx.split("\\.")[0];
                 boolean acceptFlag = false;
                 //if condition matches the prefix of the file
                 if (pattern.matcher(fileName).matches()) {
                     //now cheeck if file is a splited file with a index
-                    if (Pattern.matches("admintrafficreport\\d{24}\\-\\d+\\-\\d+.csv", fileName)) {
+                    if (Pattern.matches(fNameRegPrefix + "\\d{24}\\-\\d+\\-\\d+.csv", fileName)) {
                         //if splitfile is not in hashmap add the file name to hashmap
                         String[] splitFilePrefix = fileName.split("-");
                         if (splitFiles.containsKey(splitFilePrefix[0])) {
@@ -163,7 +164,7 @@ public class CSVWriter {
         return fileDeleted;
     }
 
-    public static void writeTrafficCSV(List<Record> records, int bufSize, String filePath) throws IOException {
+    public static void writeTrafficCSV(List<Record> records, int bufSize, String filePath, String user) throws IOException {
 
         File file = deleteIfExists(filePath);
         file.getParentFile().mkdirs();
@@ -206,9 +207,8 @@ public class CSVWriter {
         bufferedWriter.close();
 
         //TODO:set correct regex
-        boolean filedelted = deleteOldestfile(file.getParentFile(), "admintrafficreport.+");
-//admintrafficreport201609162342201709162342-0-2.csv --------------------------------------------
-//admintrafficreport201609162342201709162342.csv
+        boolean filedelted = deleteOldestfile(file.getParentFile(), user + "trafficreport.+");
+
 
     }
 }
