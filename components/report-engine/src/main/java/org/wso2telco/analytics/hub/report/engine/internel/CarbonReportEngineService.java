@@ -70,8 +70,6 @@ class ReportEngineGenerator implements Runnable {
     @Override
     public void run() {
         try {
-
-
             int searchCount =  ReportEngineServiceHolder.getAnalyticsDataService()
                     .searchCount(tenantId, tableName, query);
 
