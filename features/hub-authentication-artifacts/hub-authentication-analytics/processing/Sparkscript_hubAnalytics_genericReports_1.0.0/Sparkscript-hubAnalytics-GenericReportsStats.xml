@@ -2,31 +2,25 @@
 <Analytics>
     <Name>Sparkscript-hubAnalytics-GenericReportsStats</Name>
     <Script>
-                                                                                                                
+                                                                                                                                           
 CREATE TEMPORARY TABLE ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS
         USING CarbonAnalytics
-        OPTIONS(tableName "ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS",
+        OPTIONS(tableName "wso2telco_dep_analytics_perMinProcessedStatistics",
 		schema " 
-			api string, 		resourcePath string, 	method string, 
-			responseTime long, 	serviceTime long, 	serviceProvider string, 
-			apiPublisher string, 	applicationName string, requestId string, 
-			operatorId string, 	responseCode string, 	isSuccess BOOLEAN, 
-			msisdn string, 		direction string, 	jsonBody string, 
-			serviceProviderId string, 			spUserId string, 
-			spConsumerKey string, 	errorMessageId string, 	errorText string, 
-			responseTimeRange string, 			year int, 
-			month int, 		day int, 		hour int, 
-			operatorName string, 	apiPublisherID string, 	apiID string, 
-			department string, 	applicationId string"
+			api string , 			serviceProvider string ,	apiPublisher string, 	
+			applicationName string, 	operatorId string, 		isSuccess BOOLEAN, 
+			msisdn string, 			direction string, 		totalCount long, 
+			serviceProviderId string, 	errorMessageId string, 		responseTimeRange string, 			
+			year int,			month int, 			day int, 		
+			hour int,  			min int,			operatorName string, 	
+			apiPublisherID string, 		apiID string,			department string, 	
+			applicationId string"
 		,incrementalParams "PROCESSEDSTATISTICS_SUMMARY_HOUR, HOUR"	
 	);    
-    
-
-
 
 CREATE TEMPORARY TABLE APIHourlyTrafficSummary using CarbonAnalytics options (tableName "org_wso2telco_analytics_hub_stream_traffic_summary_per_hour",
     schema "
-    year INT -i, 
+    year INT -i, 		
     month INT -i, 
     day INT -i, 
     hour INT -i,
@@ -421,12 +415,6 @@ INSERT INTO TABLE APISummary SELECT api,serviceProvider,applicationName,operator
         apiPublisher, serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId
         FROM APIYearlyTrafficSummary GROUP BY api,serviceProvider,applicationName,operatorId,
         apiPublisher, serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId;
-
-
-
-
-                                                                         
-
                                                                                                       
 </Script>
     <CronExpression>0 0/15 * * * ?</CronExpression>
