@@ -37,7 +37,7 @@ public class CarbonReportEngineService implements ReportEngineService {
     public void generateCSVReport(String tableName, String query, String reportName, int maxLength, String reportType, String user) {
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId(true);
 
-        threadPoolExecutor.submit(new ReportEngineGenerator(tableName,query, maxLength, reportName, tenantId, reportType,user));
+        threadPoolExecutor.submit(new ReportEngineGenerator(tableName,query, maxLength, reportName, tenantId, reportType, user));
     }
 }
 

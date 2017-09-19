@@ -18,7 +18,6 @@
  */
 package org.wso2telco.analytics.hub.report.engine.internel.util;
 
-import org.apache.commons.io.FilenameUtils;
 import org.wso2.carbon.analytics.datasource.commons.Record;
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
@@ -206,9 +205,6 @@ public class CSVWriter {
         bufferedWriter.flush();
         bufferedWriter.close();
 
-        //TODO:set correct regex
         boolean filedelted = deleteOldestfile(file.getParentFile(), user + "trafficreport.+");
-
-
     }
 }
