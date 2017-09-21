@@ -2,19 +2,21 @@
 <Analytics>
     <Name>Sparkscript-hubAnalytics-GenericReportsStats</Name>
     <Script>
-                                                                                                                                           
+                                                                                                                                                                       
+                                                                                                                                                                                                   
 CREATE TEMPORARY TABLE ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS
         USING CarbonAnalytics
         OPTIONS(tableName "wso2telco_dep_analytics_perMinProcessedStatistics",
 		schema " 
-			api string , 			serviceProvider string ,	apiPublisher string, 	
-			applicationName string, 	operatorId string, 		isSuccess BOOLEAN, 
-			msisdn string, 			direction string, 		totalCount long, 
+			api string , 			    serviceProvider string ,	apiPublisher string, 	
+			applicationName string, 	operatorId string, 		    isSuccess BOOLEAN, 
+			msisdn string, 			    direction string, 		    totalCount long, 
 			serviceProviderId string, 	errorMessageId string, 		responseTimeRange string, 			
-			year int,			month int, 			day int, 		
-			hour int,  			min int,			operatorName string, 	
-			apiPublisherID string, 		apiID string,			department string, 	
-			applicationId string"
+			year int,			        month int, 			        day int, 		
+			hour int,  			        min int,			        operatorName string, 	
+			apiPublisherID string, 		apiID string,			    department string, 	
+			applicationId string
+            "
 		,incrementalParams "PROCESSEDSTATISTICS_SUMMARY_HOUR, HOUR"	
 	);    
 
@@ -45,7 +47,7 @@ CREATE TEMPORARY TABLE APIHourlyTrafficSummary using CarbonAnalytics options (ta
     );
     
 INSERT INTO TABLE APIHourlyTrafficSummary 
-	SELECT year,month,day,hour,cast(getHourStartingTime(year, month, day,hour) as STRING) as eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,count(hour) as totalCount,
+	SELECT year,month,day,hour,cast(getHourStartingTime(year, month, day,hour) as STRING) as eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,sum(totalCount) as totalCount,
 		serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId 
 	FROM ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS WHERE isSuccess =true 
 	GROUP BY year, month, day,hour,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId;    
@@ -77,7 +79,7 @@ CREATE TEMPORARY TABLE APIHourlyFailureSummary using CarbonAnalytics options (ta
     ,incrementalParams "APIHourlyFailureSummary_DAY, DAY"
     );
 
-INSERT INTO TABLE APIHourlyFailureSummary SELECT year,month,day,hour,cast(getHourStartingTime(year, month, day,hour) as STRING) as eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,errorMessageId,count(errorMessageId) as totalFailureCount,
+INSERT INTO TABLE APIHourlyFailureSummary SELECT year,month,day,hour,cast(getHourStartingTime(year, month, day,hour) as STRING) as eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,errorMessageId,sum(totalCount) as totalFailureCount,
         serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId FROM ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS WHERE isSuccess =false GROUP BY year, month, day,hour,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,errorMessageId,
         serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId;    
     
@@ -108,7 +110,7 @@ CREATE TEMPORARY TABLE APIHourlyResponseTimeSummary using CarbonAnalytics option
     ,incrementalParams "APIHourlyResponseTimeSummary_DAY, DAY"
     );
 
-INSERT INTO TABLE APIHourlyResponseTimeSummary SELECT year,month,day,hour,cast(getHourStartingTime(year, month, day,hour) as STRING) as eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,responseTimeRange,count(responseTimeRange) as totalResponseCount,
+INSERT INTO TABLE APIHourlyResponseTimeSummary SELECT year,month,day,hour,cast(getHourStartingTime(year, month, day,hour) as STRING) as eventTimeStamp,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,responseTimeRange,sum(totalCount) as totalResponseCount,
         serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId FROM ORG_WSO2TELCO_ANALYTICS_HUB_STREAM_PROCESSEDSTATISTICS WHERE isSuccess = true GROUP BY year, month, day,hour,api,serviceProvider,apiPublisher,applicationName,operatorId,isSuccess,msisdn,direction,responseTimeRange,
         serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId;    
    
@@ -405,17 +407,19 @@ CREATE TEMPORARY TABLE OperatorSummary using CarbonAnalytics options (tableName 
     primaryKeys "operatorId"
     );
 
-INSERT INTO TABLE SPSummary SELECT serviceProvider, serviceProviderId FROM APIYearlyTrafficSummary
+INSERT OVERWRITE TABLE SPSummary SELECT serviceProvider, serviceProviderId FROM APIYearlyTrafficSummary
         GROUP BY serviceProvider, serviceProviderId;
 
-INSERT INTO TABLE OperatorSummary SELECT operatorId, operatorName FROM APIYearlyTrafficSummary
+INSERT OVERWRITE TABLE OperatorSummary SELECT operatorId, operatorName FROM APIYearlyTrafficSummary
         GROUP BY operatorId, operatorName;
 
-INSERT INTO TABLE APISummary SELECT api,serviceProvider,applicationName,operatorId,
+INSERT OVERWRITE TABLE APISummary SELECT api,serviceProvider,applicationName,operatorId,
         apiPublisher, serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId
         FROM APIYearlyTrafficSummary GROUP BY api,serviceProvider,applicationName,operatorId,
         apiPublisher, serviceProviderId, operatorName, apiPublisherID, apiID, department, applicationId;
-                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                              
+
+                                                                                                                                                                                                                                                                                                                                                                                       
 </Script>
     <CronExpression>0 0/15 * * * ?</CronExpression>
 </Analytics>
