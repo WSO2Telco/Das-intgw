@@ -1,5 +1,5 @@
 /* Enter a unique ExecutionPlan */
-@Plan:name('ExecutionPlan-depAnalytics-perMinSummary22')
+@Plan:name('ExecutionPlan-depAnalytics-perMinSummary')
 
 /* Enter a unique description for ExecutionPlan */
 -- @Plan:description('ExecutionPlan')
