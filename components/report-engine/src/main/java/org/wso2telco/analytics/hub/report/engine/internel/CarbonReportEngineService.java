@@ -34,10 +34,10 @@ public class CarbonReportEngineService implements ReportEngineService {
                 new LinkedBlockingQueue<Runnable>(ReportEngineServiceConstants.SERVICE_EXECUTOR_JOB_QUEUE_SIZE));
     }
 
-    public void generateCSVReport(String tableName, String query, String reportName, int maxLength, String reportType) {
+    public void generateCSVReport(String tableName, String query, String reportName, int maxLength, String reportType, String user) {
         int tenantId = PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId(true);
 
-        threadPoolExecutor.submit(new ReportEngineGenerator(tableName,query, maxLength, reportName, tenantId, reportType));
+        threadPoolExecutor.submit(new ReportEngineGenerator(tableName,query, maxLength, reportName, tenantId, reportType, user));
     }
 }
 
@@ -58,20 +58,21 @@ class ReportEngineGenerator implements Runnable {
 
     private String reportType;
 
-    public ReportEngineGenerator(String tableName, String query, int maxLength, String reportName, int tenantId, String reportType) {
+    private String user;
+
+    public ReportEngineGenerator(String tableName, String query, int maxLength, String reportName, int tenantId, String reportType, String user) {
         this.tableName = tableName;
         this.query = query;
         this.maxLength = maxLength;
         this.reportName = reportName;
         this.tenantId = tenantId;
         this.reportType = reportType;
+        this.user = user;
     }
 
     @Override
     public void run() {
         try {
-
-
             int searchCount =  ReportEngineServiceHolder.getAnalyticsDataService()
                     .searchCount(tenantId, tableName, query);
 
@@ -83,16 +84,16 @@ class ReportEngineGenerator implements Runnable {
                     for (int i = 0; i < searchCount; ) {
                         int end = i + maxLength;
                         String filepath = reportName + "-" + i + "-" + end + ".csv";
-                        generate(tableName, query, filepath, tenantId, i, maxLength, writeBufferLength);
+                        generate(tableName, query, filepath, tenantId, i, maxLength, writeBufferLength, user);
                         i = end;
                     }
                 } else {
                     String filepath = reportName + ".csv";
-                    generate(tableName, query, filepath, tenantId, 0, searchCount, writeBufferLength);
+                    generate(tableName, query, filepath, tenantId, 0, searchCount, writeBufferLength, user);
                 }
             } else if(reportType.equalsIgnoreCase("traffic")) {
                 String filepath = reportName +  ".csv";
-                generate(tableName, query, filepath, tenantId, 0, searchCount, writeBufferLength);
+                generate(tableName, query, filepath, tenantId, 0, searchCount, writeBufferLength, user);
             }
 
 
@@ -103,7 +104,7 @@ class ReportEngineGenerator implements Runnable {
     }
 
     public void generate(String tableName, String query, String filePath, int tenantId, int start,
-                            int maxLength, int writeBufferLength)
+                            int maxLength, int writeBufferLength, String user)
             throws AnalyticsException{
 
         int dataCount = ReportEngineServiceHolder.getAnalyticsDataService()
@@ -131,9 +132,9 @@ class ReportEngineGenerator implements Runnable {
         }
         try {
             if (reportType.equalsIgnoreCase("traffic")) {
-                CSVWriter.writeTrafficCSV(records, writeBufferLength, filePath);
+                CSVWriter.writeTrafficCSV(records, writeBufferLength, filePath, user);
             } else if (reportType.equalsIgnoreCase("transaction")) {
-                CSVWriter.writeTransactionCSV(records, writeBufferLength, filePath);
+                CSVWriter.writeTransactionCSV(records, writeBufferLength, filePath, user);
             }
         } catch (IOException e) {
             log.error("CSV file " + filePath + " cannot be created", e);
